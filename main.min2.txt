@@ -1,0 +1,4148 @@
+(function () {
+  'use strict';
+
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  }
+
+  function _defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+  }
+
+  function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+      throw new TypeError("Super expression must either be null or a function");
+    }
+
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        writable: true,
+        configurable: true
+      }
+    });
+    if (superClass) _setPrototypeOf(subClass, superClass);
+  }
+
+  function _getPrototypeOf(o) {
+    _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+      return o.__proto__ || Object.getPrototypeOf(o);
+    };
+    return _getPrototypeOf(o);
+  }
+
+  function _setPrototypeOf(o, p) {
+    _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+      o.__proto__ = p;
+      return o;
+    };
+
+    return _setPrototypeOf(o, p);
+  }
+
+  function _isNativeReflectConstruct() {
+    if (typeof Reflect === "undefined" || !Reflect.construct) return false;
+    if (Reflect.construct.sham) return false;
+    if (typeof Proxy === "function") return true;
+
+    try {
+      Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {}));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function _assertThisInitialized(self) {
+    if (self === void 0) {
+      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }
+
+    return self;
+  }
+
+  function _possibleConstructorReturn(self, call) {
+    if (call && (typeof call === "object" || typeof call === "function")) {
+      return call;
+    }
+
+    return _assertThisInitialized(self);
+  }
+
+  function _createSuper(Derived) {
+    var hasNativeReflectConstruct = _isNativeReflectConstruct();
+
+    return function _createSuperInternal() {
+      var Super = _getPrototypeOf(Derived),
+          result;
+
+      if (hasNativeReflectConstruct) {
+        var NewTarget = _getPrototypeOf(this).constructor;
+
+        result = Reflect.construct(Super, arguments, NewTarget);
+      } else {
+        result = Super.apply(this, arguments);
+      }
+
+      return _possibleConstructorReturn(this, result);
+    };
+  }
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var Util = /*#__PURE__*/function () {
+    function Util() {
+      _classCallCheck(this, Util);
+    }
+
+    _createClass(Util, null, [{
+      key: "Mixin",
+      value:
+      /**
+      * Merges an object into another object. 
+      *
+      * Parameters :
+      *	a : Object, the object that will receive the properties 
+      *	b : Object, the object to merge into object A
+      * Return : the modified Object
+      */
+      function Mixin(a, b) {
+        for (var key in b) {
+          if (b.hasOwnProperty(key)) a[key] = b[key];
+        } // TODO : Why did I use arguments[0] instead of a?
+
+
+        return arguments[0];
+      }
+      /**
+      * Debounces a function. The function will be executed after a timeout 
+      * unless the function is called again in which case, the timeout will
+      * reset
+      *
+      * Parameters :
+      *	delegate : Function, the Function to debounce
+      *	threshold : Integer, the timeout length, in milliseconds
+      * Return : Function, the debounced function
+      */
+
+    }, {
+      key: "Debounce",
+      value: function Debounce(delegate, threshold) {
+        var timeout;
+        return function debounced() {
+          function delayed() {
+            delegate.apply(this, arguments);
+            timeout = null;
+          }
+
+          if (timeout) clearTimeout(timeout);
+          timeout = setTimeout(delayed.bind(this), threshold || 100);
+        };
+      }
+      /**
+      * Formats a String using substitute strings
+      *
+      * Parameters :
+      *	str : String, the String to format
+      *	subs : Array(String), An array of Strings to substitute into the String
+      * Return : String, the formatted String
+      */
+
+    }, {
+      key: "Format",
+      value: function Format(str, subs) {
+        if (!subs || subs.length == 0) return str;
+        var s = str;
+
+        for (var i = 0; i < subs.length; i++) {
+          var reg = new RegExp("\\{" + i + "\\}", "gm");
+          s = s.replace(reg, subs[i]);
+        }
+
+        return s;
+      }
+    }, {
+      key: "FirstProperty",
+      value: function FirstProperty(obj) {
+        var props = Object.getOwnPropertyNames(obj);
+        return obj[props[0]];
+      }
+    }, {
+      key: "JoinData",
+      value: function JoinData(dArray) {
+        var ds = "";
+
+        for (var i = 0; i < dArray.length; i++) {
+          var d = dArray[i];
+
+          if (i > 0) {
+            var lines = d.split('\n'); // remove one line, starting at the first position
+
+            lines.splice(0, 1); // join the array back into a single string
+
+            d = lines.join('\n');
+          }
+
+          ds = ds.concat(d);
+        }
+
+        return ds;
+      }
+    }, {
+      key: "ParseCsv",
+      value: function ParseCsv(csv) {
+        var s = 0;
+        var i = 0;
+        var lines = [[]];
+
+        while (s < csv.length) {
+          if (csv[s] == '"') {
+            s++;
+            var e = csv.indexOf('"', s);
+            var st = csv.substr(s, e - s);
+
+            if (st == "-999") {
+              st = ".";
+            }
+
+            if (st == "-99") {
+              st = "..";
+            }
+
+            if (st == "-9") {
+              st = "F";
+            }
+
+            lines[i].push(st);
+            e++;
+          } else {
+            var e1 = csv.indexOf(',', s);
+            var e2 = csv.indexOf('\n', s);
+            var e = e1 > -1 && e1 < e2 ? e1 : e2;
+            var st = csv.substr(s, e - s);
+
+            if (st == "-999") {
+              st = ".";
+            }
+
+            lines[i].push(st);
+
+            if (e == e2) {
+              lines.push([]);
+              i++;
+            }
+          }
+
+          s = e + 1;
+        }
+
+        return lines; //return csv.trim().split(/\r\n|\n/).map(l => {
+        //	return l.split(',');
+        //});
+      }
+    }, {
+      key: "DisableFocusable",
+      value: function DisableFocusable(nodes, disabled) {
+        var focusable = ["button", "fieldset", "input", "optgroup", "option", "select", "textarea"];
+        nodes.forEach(function (n) {
+          var selection = n.querySelectorAll(focusable);
+          if (selection.length == 0) return;
+
+          for (var i = 0; i < selection.length; i++) {
+            selection[i].disabled = disabled;
+          }
+        });
+      }
+    }]);
+
+    return Util;
+  }();
+
+  var _nls = null;
+  var _locale = null;
+  var _templatables = {};
+
+  var Core = /*#__PURE__*/function () {
+    function Core() {
+      _classCallCheck(this, Core);
+    }
+
+    _createClass(Core, null, [{
+      key: "root",
+      get: function get() {
+        return this._root;
+      }
+      /**
+      * Gets the nls ressources
+      *
+      * Return : Object, an object containing the nls ressources
+      */
+      ,
+      set: function set(value) {
+        this._root = value;
+      }
+    }, {
+      key: "nls",
+      get: function get() {
+        return _nls;
+      }
+      /**
+      * Sets the nls ressources
+      */
+      ,
+      set: function set(value) {
+        _nls = value;
+      }
+      /**
+      * Gets the locale String
+      *
+      * Return : String, a String containing the locale
+      */
+
+    }, {
+      key: "locale",
+      get: function get() {
+        return _locale;
+      }
+      /**
+      * Sets the locale String
+      */
+      ,
+      set: function set(value) {
+        _locale = value;
+      }
+      /**
+      * Get a localized nls string ressource
+      *
+      * Parameters :
+      *	id : String, the id of the nls ressource to retrieve
+      *	subs : Array(String), an array of Strings to substitute in the localized nls string ressource
+      *	locale : String, the locale for the nls ressource
+      * Return : String, the localized nls string ressource
+      */
+
+    }, {
+      key: "Nls",
+      value: function Nls(id, subs, locale) {
+        if (!this.nls) throw new Error("Nls content not set.");
+        var itm = this.nls[id];
+        if (!itm) throw new Error("Nls String '" + id + "' undefined.");
+        var txt = itm[locale ? locale : this.locale];
+        if (txt === undefined || txt === null) throw new Error("String does not exist for requested language.");
+        return Util.Format(txt, subs);
+      }
+      /**
+      * A convenience function to get a deffered object for asynchronous processing. 
+      * Removes one level of nesting when working with promises
+      *
+      * Parameters :
+      *	none
+      * Return : Object, an object with a Resolve and Reject function
+      *
+      * { 
+      *	promise: the promise object associated to the asynchronous process, 
+      *	Resolve: a function to resolve the promise, 
+      *	Reject: a function to reject the promise 
+      * }
+      */
+
+    }, {
+      key: "Defer",
+      value: function Defer() {
+        var defer = {};
+        defer.promise = new Promise(function (resolve, reject) {
+          defer.Resolve = function (result) {
+            resolve({
+              result: result
+            });
+          };
+
+          defer.Reject = function (error) {
+            reject({
+              error: error
+            });
+          };
+        });
+        return defer;
+      }
+      /**
+      * Get or set a templated class definition, this is required to nest Templated UI 
+      * components within other Templated UI components.
+      *
+      * Parameters :
+      *	id : String, the id of the templated class definition to get or set
+      *	definition : Class, when specified, the class definition to set 
+      * Return : Class, the class definition created  
+      */
+
+    }, {
+      key: "Templatable",
+      value: function Templatable(id, definition) {
+        if (definition) {
+          if (_templatables[id]) throw new Error("Templatable ".concat(id, " is defined multiple times."));else _templatables[id] = definition;
+        } else if (!_templatables[id]) throw new Error("Templatable ".concat(id, " is not defined."));
+
+        return _templatables[id];
+      }
+      /**
+      * Get an Array of class definitions by matching its
+      *
+      * Parameters :
+      *	id : String, the id of the nls ressource to retrieve
+      *	subs : Array(String), an array of Strings to substitute in the localized nls string ressource
+      *	locale : String, the locale for the nls ressource
+      * Return : String, the localized nls string ressource
+      */
+
+    }, {
+      key: "Templated",
+      value: function Templated(namespace) {
+        var templated = [];
+
+        for (var id in _templatables) {
+          if (id.match(namespace)) templated.push(_templatables[id]);
+        }
+
+        return templated;
+      }
+    }]);
+
+    return Core;
+  }();
+
+  var Net = /*#__PURE__*/function () {
+    function Net() {
+      _classCallCheck(this, Net);
+    }
+
+    _createClass(Net, null, [{
+      key: "Request",
+      value:
+      /**
+      * Execute a web request
+      *
+      * Parameters :
+      *	url : String, the request URL
+      * Return : none
+      *
+      * TODO : This should return a promise object but (ie11)
+      *
+      */
+      function Request(url) {
+        var d = Core.Defer();
+        var xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function () {
+          if (this.readyState != 4) return; // TODO : Switched to this.response, check if it breaks anything
+
+          if (this.status == 200) d.Resolve(this.response);else {
+            var error = new Error(this.status + " " + this.statusText);
+            d.Reject(error);
+          }
+        };
+
+        xhttp.open("GET", url, true);
+        xhttp.send();
+        return d.promise;
+      }
+    }, {
+      key: "JSON",
+      value: function (_JSON) {
+        function JSON(_x) {
+          return _JSON.apply(this, arguments);
+        }
+
+        JSON.toString = function () {
+          return _JSON.toString();
+        };
+
+        return JSON;
+      }(function (url) {
+        var d = Core.Defer();
+        Net.Request(url).then(function (r) {
+          return d.Resolve(JSON.parse(r.result));
+        }, d.Reject);
+        return d.promise;
+      }
+      /**
+      * Get a parameter value from the document URL
+      *
+      * Parameters :
+      *	name : String, the name of the parameter to retrieve from the URL
+      * Return : String, the value of the parameter from the URL, an empty string if not found
+      */
+      )
+    }, {
+      key: "GetUrlParameter",
+      value: function GetUrlParameter(name) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+        var results = regex.exec(window.location.href);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      }
+      /**
+      * Download content as a file
+      *
+      * Parameters :
+      *	name : String, the name of the file to download
+      *	content : 
+      * Return : none
+      */
+
+    }, {
+      key: "Download",
+      value: function Download(name, content) {
+        var link = document.createElement("a");
+        link.href = "data:application/octet-stream," + encodeURIComponent(content);
+        link.download = name;
+        link.click();
+        link = null;
+      }
+      /**
+      * Gets the base URL for the app
+      *
+      * Parameters : none
+      * Return : String, the base path to the web app
+      */
+
+    }, {
+      key: "AppPath",
+      value: function AppPath() {
+        var path = location.href.split("/");
+        path.pop();
+        return path.join("/");
+      }
+      /**
+      * Gets the base URL for the app
+      *
+      * Parameters : none
+      * Return : String, the base path to the web app
+      */
+
+    }, {
+      key: "FilePath",
+      value: function FilePath(file) {
+        file = file.charAt(0) == "/" ? file.substr(1) : file;
+        var path = [Net.AppPath(), file];
+        return path.join("/");
+      }
+    }]);
+
+    return Net;
+  }();
+
+  var Dom = /*#__PURE__*/function () {
+    function Dom() {
+      _classCallCheck(this, Dom);
+    }
+
+    _createClass(Dom, null, [{
+      key: "Node",
+      value:
+      /**
+      * Retrieve an Element using a selector
+      *
+      * Parameters :
+      *	pNode : Element, the parent node where to begin the search
+      *	selector : String, a selector statement
+      * Return : Element, the Element found, null otherwise
+      */
+      function Node(pNode, selector) {
+        return pNode.querySelectorAll(selector).item(0) || null;
+      }
+      /**
+      * Create an Element
+      *
+      * Parameters :
+      *	tagName : String, the type of Element to be created (div, span, label, input, etc.)
+      *	options : Object, a dictionary type object containing the options to assign to the created Element
+      *	pNode : Element, the parent Element where the created Element will be apended
+      * Return : Element, The Element created
+      */
+
+    }, {
+      key: "Create",
+      value: function Create(tagName, options, pNode) {
+        var elem = document.createElement(tagName);
+        Util.Mixin(elem, options);
+        this.Place(elem, pNode);
+        return elem;
+      }
+      /**
+      * Create an SVG Element
+      *
+      * Parameters :
+      *	tagName : String, the type of SVG Element to be created (rect, path, etc.)
+      *	options : Object, a dictionary type object containing the options to assign to the created SVG Element
+      *	pNode : Element, the parent Element where the created SVG Element will be apended
+      * Return : Element, The SVG Element created
+      */
+
+    }, {
+      key: "CreateSVG",
+      value: function CreateSVG(tagName, options, pNode) {
+        var elem = document.createElementNS("http://www.w3.org/2000/svg", tagName);
+
+        for (var id in options) {
+          elem.setAttribute(id, options[id]);
+        }
+
+        this.Place(elem, pNode);
+        return elem;
+      }
+      /**
+      * Create an Element from a namespace
+      *
+      * Parameters :
+      *	ns : String, the URI namespace containing the Element to create 
+      *	tagName : String, the type of Element to be created (rect, path, etc.)
+      *	options : Object, a dictionary type object containing the options to assign to the created Element
+      *	pNode : Element, the parent Element where the created Element will be apended
+      *
+      * Valid Namespaces are : 
+      *	HTML : http://www.w3.org/1999/xhtml
+      *	SVG  : http://www.w3.org/2000/svg
+      *	XBL  : http://www.mozilla.org/xbl
+      *	XUL  : http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul
+      *
+      * Return : Element, The SVG Element created
+      */
+
+    }, {
+      key: "CreateNS",
+      value: function CreateNS(ns, tagName, options, pNode) {
+        var elem = document.createElementNS(ns, tagName);
+
+        for (var id in options) {
+          elem.setAttribute(id, options[id]);
+        }
+
+        this.Place(elem, pNode);
+        return elem;
+      }
+      /**
+      * Append an Element to another Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to append
+      *	pNode : Element, the parent Element where the Element will be apended
+      * Return : none
+      */
+
+    }, {
+      key: "Place",
+      value: function Place(elem, pNode) {
+        if (!!pNode) pNode.appendChild(elem);
+      }
+      /**
+      * Replace an Element by another Element
+      *
+      * Parameters :
+      *	elem1 : Element, the Element to be replaced
+      *	elem2 : Element, the Element that will replace elem1
+      * Return : none
+      */
+
+    }, {
+      key: "Replace",
+      value: function Replace(elem1, elem2) {
+        var pNode = elem1.parentNode;
+        pNode.insertBefore(elem2, elem1);
+        this.Remove(elem1, pNode);
+      }
+      /**
+      * Remove an Element from another Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to remove
+      *	pNode : Element, the parent Element containing the Element to remove
+      * Return : none
+      */
+
+    }, {
+      key: "Remove",
+      value: function Remove(elem, pNode) {
+        if (!pNode.children.some(function (child) {
+          return child === elem;
+        })) return;
+        pNode.removeChild(elem);
+      }
+      /**
+      * Remove all children of an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to empty
+      * Return : none
+      */
+
+    }, {
+      key: "Empty",
+      value: function Empty(elem) {
+        while (elem.firstChild) {
+          elem.removeChild(elem.firstChild);
+        }
+      }
+      /**
+      * Add a CSS rule on an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to modify
+      *	css : String, the CSS rule to add on the Element
+      * Return : none
+      */
+
+    }, {
+      key: "AddCss",
+      value: function AddCss(elem, css) {
+        var c1 = elem.className.split(" ");
+        css.split(" ").forEach(function (c) {
+          if (c1.indexOf(c) == -1) c1.push(c);
+        });
+        elem.className = c1.join(" ");
+      }
+      /**
+      * Remove a CSS rule on an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to modify
+      *	css : String, the CSS rule to remove from the Element
+      * Return : none
+      */
+
+    }, {
+      key: "RemoveCss",
+      value: function RemoveCss(elem, css) {
+        var c1 = elem.className.split(" ");
+        var c2 = css.split(" ");
+        elem.className = c1.filter(function (c) {
+          return c2.indexOf(c) == -1;
+        }).join(" ");
+      }
+      /**
+      * Verify that an Element contains a CSS rule
+      *
+      * Parameters :
+      *	elem : Element, the Element to verify
+      *	css : String, the CSS rule to find
+      * Return : Boolean, true if the Element contains the CSS rule, false otherwise
+      */
+
+    }, {
+      key: "HasCss",
+      value: function HasCss(elem, css) {
+        return (' ' + elem.className + ' ').indexOf(' ' + css + ' ') > -1;
+      }
+      /**
+      * Set the CSS rules on an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to modify
+      *	css : String, the CSS rule to set on the Element
+      * Return : none
+      */
+
+    }, {
+      key: "SetCss",
+      value: function SetCss(elem, css) {
+        elem.className = css;
+      }
+      /**
+      * Toggle a CSS rule on or or off for an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to modify
+      *	css : String, the CSS rule to toggle on the Element
+      *	enabled : Boolean, true to toggle the CSS rule on, false to toggle it off
+      * Return : none
+      */
+
+    }, {
+      key: "ToggleCss",
+      value: function ToggleCss(elem, css, enabled) {
+        if (enabled) this.AddCss(elem, css);else this.RemoveCss(elem, css);
+      }
+      /**
+      * Get an attribute value from an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to retrieve the attribute from
+      *	attr : String, the name of the attribute to retrieve
+      * Return : String, the value of the attribute if found, null otherwise
+      */
+
+    }, {
+      key: "GetAttribute",
+      value: function GetAttribute(elem, attr) {
+        var attr = elem.attributes.getNamedItem(attr);
+        return attr ? attr.value : null;
+      }
+      /**
+      * Set an attribute value on an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to set the attribute on
+      *	attr : String, the name of the attribute to set
+      *	value : String, the value of the attribute to set
+      * Return : none
+      */
+
+    }, {
+      key: "SetAttribute",
+      value: function SetAttribute(elem, attr, value) {
+        elem.setAttribute(attr, value);
+      }
+      /**
+      * Get the size of an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to retrieve the size
+      * Return : Object, an object literal containing the size of the Element
+      * 
+      * { 
+      *	w: width of the Element, 
+      *	h: height of the Element 
+      * }
+      */
+
+    }, {
+      key: "Size",
+      value: function Size(elem) {
+        var style = window.getComputedStyle(elem);
+        var h = +style.getPropertyValue("height").slice(0, -2);
+        var w = +style.getPropertyValue("width").slice(0, -2);
+        var pL = +style.getPropertyValue("padding-left").slice(0, -2);
+        var pR = +style.getPropertyValue("padding-right").slice(0, -2);
+        var pT = +style.getPropertyValue("padding-top").slice(0, -2);
+        var pB = +style.getPropertyValue("padding-bottom").slice(0, -2);
+        var w = w - pL - pR;
+        var h = h - pT - pB; // Use smallest width as width and height for square grid that fits in container
+        // var s = w < h ? w : h;
+
+        return {
+          w: w,
+          h: h
+        };
+      }
+      /**
+      * Get the siblings of an Element
+      *
+      * Parameters :
+      *	elem : Element, the Element to retrieve the siblings
+      * Return : Array, An array of elements containing the siblings of the input element
+      */
+
+    }, {
+      key: "Siblings",
+      value: function Siblings(elem) {
+        var elements = [];
+
+        for (var i = 0; i < elem.parentNode.children.length; i++) {
+          elements.push(elem.parentNode.children[i]);
+        }
+
+        elements.splice(elements.indexOf(elem), 1);
+        return elements;
+      }
+    }]);
+
+    return Dom;
+  }();
+
+  var Configuration = /*#__PURE__*/function () {
+    function Configuration() {
+      _classCallCheck(this, Configuration);
+
+      this.id = null;
+      this.style = null;
+      this.tableUrl = null;
+      this.layers = null;
+      this.title = null;
+      this.abbr = null;
+      this.description = null;
+      this.legend = null;
+      this.table = null;
+      this.type = null;
+      this.indicators = null;
+      this.useIndicatorTitles = null;
+      this.variables = null;
+    }
+
+    _createClass(Configuration, [{
+      key: "ID",
+      get: // Get for untransformed properties
+      function get() {
+        return this.id;
+      }
+    }, {
+      key: "Style",
+      get: function get() {
+        return this.style;
+      } // Get for localized strings
+
+    }, {
+      key: "Abbr",
+      get: function get() {
+        return this.abbr;
+      } // Get for localized strings
+
+    }, {
+      key: "Title",
+      get: function get() {
+        return this.title;
+      } // Get for localized strings
+
+    }, {
+      key: "FullTitle",
+      get: function get() {
+        return "".concat(this.Title, " (").concat(this.Abbr, ")");
+      } // Get for localized strings
+
+    }, {
+      key: "TableUrl",
+      get: function get() {
+        return this.tableUrl;
+      }
+    }, {
+      key: "Table",
+      get: function get() {
+        if (!this.table) return null;
+        return {
+          path: this.table.path,
+          summary: this.table.summary,
+          title: this.table.title,
+          description: this.table.description,
+          fields: this.Fields
+        };
+      }
+    }, {
+      key: "Description",
+      get: function get() {
+        return this.description;
+      }
+    }, {
+      key: "Layers",
+      get: function get() {
+        return this.layers;
+      } // Get for transformed properties
+
+    }, {
+      key: "LayerIDs",
+      get: function get() {
+        var layers = this.Layers;
+        return layers && layers.map(function (l) {
+          return l.id;
+        });
+      }
+    }, {
+      key: "VisibleLayers",
+      get: function get() {
+        var layers = this.Layers;
+        return layers && layers.filter(function (l) {
+          return l.visible || l.visible === undefined;
+        });
+      }
+    }, {
+      key: "VisibleLayerIDs",
+      get: function get() {
+        var layers = this.VisibleLayers;
+        return layers && layers.map(function (l) {
+          return l.id;
+        });
+      }
+    }, {
+      key: "SelectedLayers",
+      get: function get() {
+        var layers = this.Layers;
+        return layers.filter(function (l) {
+          return l.selected;
+        });
+      }
+    }, {
+      key: "SelectedLayerIDs",
+      get: function get() {
+        var layers = this.SelectedLayers;
+        return layers && layers.map(function (l) {
+          return l.id;
+        });
+      }
+    }, {
+      key: "HighlightLayers",
+      get: function get() {
+        var layers = this.highlightLayers;
+        return layers;
+      }
+    }, {
+      key: "ClickableLayers",
+      get: function get() {
+        var layers = this.Layers;
+        return layers && layers.filter(function (l) {
+          return !!l.click;
+        });
+      }
+    }, {
+      key: "ClickableLayersIDs",
+      get: function get() {
+        var layers = this.ClickableLayers;
+        return layers && layers.map(function (l) {
+          return l.id;
+        });
+      }
+    }, {
+      key: "ClickableLayersIDsByZoom",
+      value: function ClickableLayersIDsByZoom(zoom) {
+        var layerT = this.ClickableLayers;
+        var layers = [];
+
+        for (var i = 0, l = layerT.length; i < l; i++) {
+          var lay = layerT[i];
+          var minzoom = 0;
+
+          if (lay.minzoom != null) {
+            minzoom = lay.minzoom;
+          } //console.log("adding layer", lay, minzoom, lay.minzoom, lay.maxzoom);
+
+
+          if (zoom >= minzoom && lay.maxzoom > zoom || lay.maxzoom == null) {
+            layers.push(lay);
+          }
+        }
+
+        return layers && layers.map(function (l) {
+          return l.id;
+        });
+      }
+    }, {
+      key: "multiLegend",
+      value: function multiLegend(legend) {
+        return legend && legend.map(function (l) {
+          return {
+            color: l.color,
+            label: l.label && l.label[Core.locale],
+            title: Core.Nls("Legend_Checkbox_Title"),
+            value: l.value
+          };
+        });
+      }
+    }, {
+      key: "Legend",
+      get: function get() {
+        return this.legend && this.legend.map(function (l) {
+          return {
+            color: l.color,
+            label: l.label && l.label[Core.locale],
+            title: Core.Nls("Legend_Checkbox_Title"),
+            value: l.value
+          };
+        });
+      }
+    }, {
+      key: "Fields",
+      get: function get() {
+        if (!this.table) return null;
+        return this.table.fields.map(function (f) {
+          return {
+            id: f.id,
+            label: f[Core.locale],
+            type: f.type || null
+          };
+        });
+      }
+    }, {
+      key: "UpdateTable",
+      value: function UpdateTable(json) {
+        this.table = {
+          path: json.path,
+          summary: json.summary,
+          title: json.title[Core.locale],
+          description: json.description[Core.locale],
+          fields: json.fields
+        };
+      }
+    }, {
+      key: "HasLayer",
+      value: function HasLayer(layerId) {
+        for (var i = 0; i < this.layers.length; i++) {
+          if (this.layers[i].id === layerId) return true;
+        }
+
+        return false;
+      }
+    }], [{
+      key: "FromJSON",
+      value: function FromJSON(json) {
+        var c = new Configuration();
+        c.id = json.id;
+        c.linkedlayers = json.linkedlayers || null;
+        c.style = json.style;
+        c.tableUrl = json.table || null;
+        c.layers = json.layers || null;
+        c.highlightLayers = json.highlightLayers || null;
+        c.title = json.title && json.title[Core.locale] || null;
+        c.abbr = json.abbr && json.abbr[Core.locale] || null;
+        c.description = json.description && json.description[Core.locale] || null;
+        c.legend = json.legend || null;
+        c.type = json.type || null;
+        c.indicators = json.indicators || null;
+        c.useIndicatorTitles = json.useIndicatorTitles || null;
+        c.variables = json.variables || null;
+        c.geographies = json.geographies || null;
+        c.searchID = json.searchID || "CSDUID";
+        c.sourceLayer = json.sourceLayer || null;
+        c.suppressFields = json.suppressFields || null;
+        c.eFileDownload = json.eFileDownload || null;
+        c.fFileDownload = json.fFileDownload || null;
+        c.fileReplace = json.fileReplace || null;
+        c.suppressComparison = json.suppressComparison || false;
+        c.stops = json.stops || null;
+        return c;
+      }
+    }]);
+
+    return Configuration;
+  }();
+
+  var Other = /*#__PURE__*/function () {
+    function Other() {
+      _classCallCheck(this, Other);
+    }
+
+    _createClass(Other, null, [{
+      key: "Polish",
+      value: function Polish(json, exp, d) {
+        // exp is formatted as follows [symbol, property 1, property 2]
+        var v1 = json[exp[1]];
+        var v2 = json[exp[2]];
+        var v = null;
+        if (exp[0] == "+") v = v1 + v2;
+        if (exp[0] == "-") v = v1 - v2;
+        if (exp[0] == "*") v = v1 * v2;
+        if (exp[0] == "/") v = v1 / v2;
+        return v.toFixed(d);
+      }
+    }, {
+      key: "HTMLize",
+      value: function HTMLize(json, fields, na) {
+        var suppressFields = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+        var html = "";
+        fields.forEach(function (f) {
+          var label = f.label;
+          var inner = Core.Nls("Gen_Label_Field", [label, json[f.id]]);
+
+          if (suppressFields == null || !suppressFields.includes(f.id)) {
+            html += "<li tabIndex=0><label>".concat(inner, "</label></li>");
+          }
+        });
+        return "<ul class='popup-inner'>".concat(html, "</ul>");
+      }
+    }, {
+      key: "LookupProvince",
+      value: function LookupProvince(abbr, locale) {
+        abbr = abbr.trim(); // Hidden whitespace character at the end, weird.
+
+        if (abbr == 'nl') return locale == "en" ? "Newfoundland and Labrador" : "Terre-Neuve-et-Labrador";
+        if (abbr == 'pe') return locale == "en" ? "Prince Edward Island" : "Île-du-Prince-Édouard";
+        if (abbr == 'ns') return locale == "en" ? "Nova Scotia" : "Nouvelle-Écosse";
+        if (abbr == 'nb') return locale == "en" ? "New Brunswick" : "Nouveau-Brunswick";
+        if (abbr == 'qc') return locale == "en" ? "Quebec" : "Québec";
+        if (abbr == 'on') return locale == "en" ? "Ontario" : "Ontario";
+        if (abbr == 'mb') return locale == "en" ? "Manitoba" : "Manitoba";
+        if (abbr == 'sk') return locale == "en" ? "Saskatchewan" : "Saskatchewan";
+        if (abbr == 'ab') return locale == "en" ? "Alberta" : "Alberta";
+        if (abbr == 'bc') return locale == "en" ? "British Columbia" : "Colombie-Britannique";
+        if (abbr == 'yt') return locale == "en" ? "Yukon" : "Yukon";
+        if (abbr == 'nt') return locale == "en" ? "Northwest Territories" : "Territoires du Nord-Ouest";
+        if (abbr == 'nu') return locale == "en" ? "Nunavut" : "Nunavut";
+      }
+    }]);
+
+    return Other;
+  }();
+
+  var Evented = /*#__PURE__*/function () {
+    function Evented() {
+      _classCallCheck(this, Evented);
+
+      this.listeners = {};
+    }
+
+    _createClass(Evented, [{
+      key: "addEventListener",
+      value: function addEventListener(type, callback, once) {
+        if (!(type in this.listeners)) this.listeners[type] = [];
+        var h = {
+          target: this,
+          type: type,
+          callback: callback,
+          once: !!once
+        };
+        this.listeners[type].push(h);
+        return h;
+      }
+    }, {
+      key: "removeEventListener",
+      value: function removeEventListener(type, callback) {
+        if (!(type in this.listeners)) return;
+        var stack = this.listeners[type];
+
+        for (var i = 0, l = stack.length; i < l; i++) {
+          if (stack[i].callback === callback) {
+            stack.splice(i, 1);
+            return this.removeEventListener(type, callback);
+          }
+        }
+      }
+    }, {
+      key: "dispatchEvent",
+      value: function dispatchEvent(event) {
+        if (!(event.type in this.listeners)) return;
+        var stack = this.listeners[event.type];
+
+        for (var i = 0; i < stack.length; i++) {
+          stack[i].callback.call(this, event);
+        }
+
+        for (var i = stack.length - 1; i >= 0; i--) {
+          if (!!stack[i].once) this.removeEventListener(event.type, stack[i].callback);
+        }
+      }
+    }, {
+      key: "Emit",
+      value: function Emit(type, data) {
+        // Let base event properties be overwritten by whatever was provided.	
+        var event = {
+          bubbles: true,
+          cancelable: true
+        };
+        Util.Mixin(event, data); // Use the type that was specifically provided, target is always this.
+
+        event.type = type;
+        event.target = this;
+        this.dispatchEvent(event);
+      }
+    }, {
+      key: "On",
+      value: function On(type, callback) {
+        return this.addEventListener(type, callback, false);
+      }
+    }, {
+      key: "Once",
+      value: function Once(type, callback) {
+        return this.addEventListener(type, callback, true);
+      }
+    }, {
+      key: "Off",
+      value: function Off(type, callback) {
+        this.removeEventListener(type, callback);
+      }
+    }]);
+
+    return Evented;
+  }();
+
+  var Templated = /*#__PURE__*/function (_Evented) {
+    _inherits(Templated, _Evented);
+
+    var _super = _createSuper(Templated);
+
+    function Templated(container, options) {
+      var _this;
+
+      _classCallCheck(this, Templated);
+
+      _this = _super.call(this);
+      _this.options = options || {};
+
+      _this.BuildTemplate();
+
+      if (_this.template) _this.SetNamedNodes();
+      if (_this.template) _this.BuildSubWidgets();
+      if (_this.template) _this.SetRoots();
+      if (container) _this.Place(container);
+      return _this;
+    }
+
+    _createClass(Templated, [{
+      key: "BuildTemplate",
+      value: function BuildTemplate() {
+        // Use template provided in options first, use Template function second
+        var html = this.options.template ? this.options.template : this.Template(); // TODO : I think it still works with empty templates.
+
+        if (!html) return; // Trailing whitespaces can cause issues when parsing the template, remove them
+
+        html = html.trim(); // Replace all nls strings in template. Nls string pattern in templates is nls(StringId)
+
+        html = this.Replace(html, /nls\((.*?)\)/, function (m) {
+          return Core.Nls(m);
+        });
+        this.template = Dom.Create("div", {
+          innerHTML: html
+        });
+      }
+    }, {
+      key: "SetNamedNodes",
+      value: function SetNamedNodes() {
+        var named = this.template.querySelectorAll("[handle]");
+        this.nodes = {}; // Can't use Array ForEach here since named is a NodeList, not an array
+
+        for (var i = 0; i < named.length; i++) {
+          var name = Dom.GetAttribute(named[i], "handle");
+          this.nodes[name] = named[i];
+        }
+      }
+    }, {
+      key: "BuildSubWidgets",
+      value: function BuildSubWidgets() {
+        var nodes = this.template.querySelectorAll("[widget]");
+
+        for (var i = 0; i < nodes.length; i++) {
+          var path = Dom.GetAttribute(nodes[i], "widget");
+          var module = Core.Templatable(path);
+          var widget = new module(nodes[i]);
+          var handle = Dom.GetAttribute(widget.container, "handle");
+          if (handle) this.nodes[handle] = widget;
+        }
+      }
+    }, {
+      key: "SetRoots",
+      value: function SetRoots() {
+        this.roots = [];
+
+        for (var i = 0; i < this.template.children.length; i++) {
+          this.roots.push(this.template.children[i]);
+        }
+      }
+    }, {
+      key: "Place",
+      value: function Place(container) {
+        this.container = container;
+        this.roots.forEach(function (r) {
+          return Dom.Place(r, container);
+        });
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return null;
+      }
+    }, {
+      key: "Replace",
+      value: function Replace(str, expr, delegate) {
+        var m = str.match(expr);
+
+        while (m) {
+          str = str.replace(m[0], delegate(m[1]));
+          m = str.match(expr);
+        }
+
+        return str;
+      }
+    }, {
+      key: "Node",
+      value: function Node(id) {
+        return this.nodes[id];
+      } // TODO : Build a root function
+
+    }]);
+
+    return Templated;
+  }(Evented);
+
+  var Control = /*#__PURE__*/function (_Templated) {
+    _inherits(Control, _Templated);
+
+    var _super = _createSuper(Control);
+
+    function Control(options) {
+      var _this;
+
+      _classCallCheck(this, Control);
+
+      _this = _super.call(this, null, options);
+      if (!_this.template) throw new Error("MapBox controls cannot be empty");
+      if (_this.template.children.length > 1) throw new Error("MapBox controls should have one root node");
+      _this._container = _this.template.children[0];
+      return _this;
+    }
+
+    _createClass(Control, [{
+      key: "onAdd",
+      value: function onAdd(map) {
+        this._map = map;
+        return this._container;
+      }
+    }, {
+      key: "onRemove",
+      value: function onRemove() {
+        this._container.parentNode.removeChild(this._container);
+
+        this._map = undefined;
+      }
+    }]);
+
+    return Control;
+  }(Templated);
+
+  var n = 0;
+
+  var Legend$1 = /*#__PURE__*/function (_Control) {
+    _inherits(Legend, _Control);
+
+    var _super = _createSuper(Legend);
+
+    function Legend(options) {
+      var _this;
+
+      _classCallCheck(this, Legend);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root');
+      _this.chkBoxes = null;
+      _this.chkBoxesState = null;
+      _this.radioBoxes = null;
+      _this.radioBoxesState = null;
+
+      _this.ReloadHandler(options, true); //this.Reload(options.legend, options.title, options.banner, options.subtitle);
+
+
+      return _this;
+    }
+
+    _createClass(Legend, [{
+      key: "ReloadHandler",
+      value: function ReloadHandler(options) {
+        var upper = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        var choice = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+
+        if (options.type == "single") {
+          if (upper) {
+            this.Reload(options.Legend, options.Title, options.Banner, options.Subtitle);
+          } else {
+            this.Reload(options.legend, options.title, options.banner, options.subtitle);
+          }
+        } else if (options.type == "multiple") {
+          var ind = options.indicators[choice];
+          var title = ind.title;
+
+          if (options.useIndicatorTitles == null) {
+            title = options.title;
+          }
+
+          var leg = ind.legend;
+
+          if (leg == null && options.legend != null) {
+            leg = options.legend;
+          }
+
+          if (upper) {
+            if (typeof title !== 'string') {
+              title = title[Core.locale];
+            }
+
+            this.Reload(options.multiLegend(leg), title, ind.banner, ind.subtitle, options.indicators, choice);
+          } else {
+            this.Reload(leg, title, ind.banner, ind.subtitle, options.indicators, choice);
+          }
+        }
+      }
+    }, {
+      key: "Reload",
+      value: function Reload(legend, title, banner, subtitle) {
+        var indicators = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
+        var choice = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
+        this.LoadLegend(legend, indicators, choice);
+        if (banner) this.Node('banner').innerHTML = banner;
+        if (title) this.Node('title').innerHTML = title;
+        if (subtitle) this.Node('subtitle').innerHTML = subtitle;
+        Dom.ToggleCss(this.Node("banner"), "hidden", !banner);
+        Dom.ToggleCss(this.Node("title"), "hidden", !title);
+        Dom.ToggleCss(this.Node("subtitle"), "hidden", !subtitle);
+      }
+    }, {
+      key: "LoadLegend",
+      value: function LoadLegend(config) {
+        var _this2 = this;
+
+        var indicators = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+        var choice = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+        this.chkBoxes = [];
+        this.chkBoxesState = [];
+        Dom.Empty(this.Node("legend"));
+        this.Node('ititle').innerHTML = "";
+        Dom.Empty(this.Node("indicators"));
+        if (!config) return;
+        config.forEach(function (i) {
+          return _this2.AddLegendItem(i);
+        });
+
+        if (indicators !== null) {
+          this.Node('ititle').innerHTML = "Indicators";
+          this.radioBoxes = [];
+          this.radioBoxesState = [];
+          indicators.forEach(function (i) {
+            return _this2.AddIndicatorItem(i);
+          });
+
+          for (var i = 0, length = this.radioBoxesState.length; i < length; i++) {
+            var r = this.radioBoxesState[i].radiobox;
+
+            if (i == choice) {
+              r.checked = true;
+            }
+          }
+        }
+      }
+    }, {
+      key: "AddLegendItem",
+      value: function AddLegendItem(item) {
+        if (!item.label) return;
+
+        if (item.value) {
+          //If it has a checkbox action to be performed
+          var id = "legend-check-" + ++n;
+          var div = Dom.Create("div", {
+            className: "legend-item legend-item-1"
+          }, this.Node("legend"));
+          var chkBox = Dom.Create("input", {
+            id: id,
+            title: item.title,
+            className: "legend-tickbox",
+            type: "checkbox",
+            checked: true
+          }, div);
+          var svg = Dom.CreateSVG("svg", {
+            width: 15,
+            height: 15
+          }, div);
+          var icn = Dom.CreateSVG("rect", {
+            width: 15,
+            height: 15
+          }, svg);
+          var lbl = Dom.Create("label", {
+            innerHTML: item.label
+          }, div);
+          lbl.setAttribute("for", id);
+          this.chkBoxes.push(chkBox);
+          chkBox.addEventListener("change", this.OnCheckbox_Checked.bind(this));
+          icn.setAttribute('fill', "rgb(".concat(item.color.join(","), ")"));
+          this.chkBoxesState.push({
+            item: item,
+            checkbox: chkBox
+          });
+          return div;
+        } else {
+          var id = "legend-check-" + ++n;
+          var div = Dom.Create("div", {
+            className: "legend-item legend-item-1"
+          }, this.Node("legend"));
+          var svg = Dom.CreateSVG("svg", {
+            width: 15,
+            height: 15
+          }, div);
+          var icn = Dom.CreateSVG("rect", {
+            width: 15,
+            height: 15
+          }, svg);
+          var lbl = Dom.Create("label", {
+            innerHTML: item.label
+          }, div);
+          lbl.setAttribute("for", id);
+          icn.setAttribute('fill', "rgb(".concat(item.color.join(","), ")"));
+          return div;
+        }
+      }
+    }, {
+      key: "AddIndicatorItem",
+      value: function AddIndicatorItem(item) {
+        var id = "legend-check-" + ++n;
+        var title = Core.Nls("Indicator_Select") + item.title[Core.locale];
+        var div = Dom.Create("div", {
+          className: "legend-item legend-item-1"
+        }, this.Node("indicators"));
+        var rBox = Dom.Create("input", {
+          id: id,
+          title: title,
+          className: "legend-tickbox",
+          type: "radio",
+          checked: false,
+          name: "indicators"
+        }, div);
+        Dom.Create("label", {
+          innerHTML: item.title[Core.locale]
+        }, div);
+        this.radioBoxes.push(rBox);
+        this.radioBoxesState.push({
+          item: item,
+          radiobox: rBox
+        }); //lbl.setAttribute("for", id);		
+
+        rBox.addEventListener("change", this.OnRadio_Checked.bind(this));
+      }
+    }, {
+      key: "OnCheckbox_Checked",
+      value: function OnCheckbox_Checked(ev) {
+        this.Emit("LegendChange", {
+          state: this.chkBoxesState
+        });
+      }
+    }, {
+      key: "OnRadio_Checked",
+      value: function OnRadio_Checked(ev) {
+        this.Emit("IndicatorChange", {
+          state: this.radioBoxesState
+        });
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='legend mapboxgl-ctrl'>" + "<div handle='banner' class='control-label legend-banner'></div>" + "<div>" + "<div handle='title' class='control-label'></div>" + "<div handle='subtitle' class='control-label legend-subtitle'></div>" + "</div>" + "<div handle='legend' class='legend-container'></div>" + "<div>" + "<div handle='ititle' class='control-label'></div>" + "<div handle='isubtitle' class='control-label legend-subtitle'></div>" + "</div>" + "<div handle='indicators' class='legend-container'></div>" + "</div>";
+      }
+    }]);
+
+    return Legend;
+  }(Control);
+
+  var Toc = /*#__PURE__*/function (_Control) {
+    _inherits(Toc, _Control);
+
+    var _super = _createSuper(Toc);
+
+    function Toc(options) {
+      var _this;
+
+      _classCallCheck(this, Toc);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root');
+
+      _this.Reload(options.toc);
+
+      return _this;
+    }
+
+    _createClass(Toc, [{
+      key: "HasLayer",
+      value: function HasLayer(layerId) {
+        return this.radios.hasOwnProperty(layerId);
+      }
+    }, {
+      key: "Reload",
+      value: function Reload(toc) {
+        var _this2 = this;
+
+        Dom.Empty(this.Node("toc"));
+        this.radios = {};
+        if (toc) toc.forEach(function (i) {
+          return _this2.radios[i.id] = _this2.AddTocItem(i);
+        });
+      }
+    }, {
+      key: "SelectItem",
+      value: function SelectItem(selected) {
+        if (this.current) this.radios[this.current].checked = false;
+        if (!this.HasLayer(selected)) return;
+        this.current = selected;
+        this.radios[selected].checked = true;
+      }
+    }, {
+      key: "onChange_Handler",
+      value: function onChange_Handler(item, ev) {
+        if (this.current) this.radios[this.current].checked = false;
+        this.current = item.id;
+        this.Emit('LayerVisibility', {
+          layer: this.current
+        });
+      }
+    }, {
+      key: "AddTocItem",
+      value: function AddTocItem(item) {
+        var i = this.Node("toc").children.length + 1;
+        var div = Dom.Create("div", {
+          className: "toc-item"
+        }, this.Node("toc"));
+        var ipt = Dom.Create("input", {
+          type: "radio",
+          name: "toc",
+          id: "rd-".concat(i)
+        }, div);
+        var lbl = Dom.Create("label", {
+          innerHTML: item.label
+        }, div);
+        lbl.setAttribute("for", "rd-".concat(i));
+        ipt.addEventListener('change', this.onChange_Handler.bind(this, item));
+        return ipt;
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='toc mapboxgl-ctrl'>" + "<div class='control-label'>nls(Toc_Instruction)</div>" + "<div handle='toc' class='legend-container toc-container'></div>" + "</div>";
+      }
+    }]);
+
+    return Toc;
+  }(Control);
+
+  var Legend = /*#__PURE__*/function (_Control) {
+    _inherits(Legend, _Control);
+
+    var _super = _createSuper(Legend);
+
+    function Legend(options) {
+      var _this;
+
+      _classCallCheck(this, Legend);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root');
+      _this.opacity = _this.options.opacity == undefined ? 0.75 : _this.options.opacity;
+      _this.Node("slider").value = _this.opacity * 100;
+
+      _this.Node('slider').addEventListener("change", _this.onSliderChange_Handler.bind(_assertThisInitialized(_this)));
+
+      return _this;
+    }
+
+    _createClass(Legend, [{
+      key: "title",
+      set: function set(value) {
+        this.Node("slider").title = value;
+      }
+    }, {
+      key: "onSliderChange_Handler",
+      value: function onSliderChange_Handler(ev) {
+        this.opacity = this.Node("slider").value / 100;
+        this.Emit("OpacityChanged", {
+          opacity: this.opacity
+        });
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='opacity mapboxgl-ctrl'>" + "<label class='control-label'>nls(Toc_Opacity)" + "<input handle='slider' type='range' min='0' max='100' value='75' class='slider'>" + "</label>" + "</div>";
+      }
+    }]);
+
+    return Legend;
+  }(Control);
+
+  var Download = /*#__PURE__*/function (_Control) {
+    _inherits(Download, _Control);
+
+    var _super = _createSuper(Download);
+
+    function Download(options) {
+      var _this;
+
+      _classCallCheck(this, Download);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root');
+      if (options.link) _this.Node('link').setAttribute('href', options.link);
+      return _this;
+    }
+
+    _createClass(Download, [{
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='download mapboxgl-ctrl'>" + "<div class='control-label'>" + "<a handle='link' target='_blank' class='link'>nls(Download_Title)</a>" + "</div>" + "</div>";
+      }
+    }]);
+
+    return Download;
+  }(Control);
+
+  var MapsList = /*#__PURE__*/function (_Control) {
+    _inherits(MapsList, _Control);
+
+    var _super = _createSuper(MapsList);
+
+    function MapsList(options) {
+      var _this;
+
+      _classCallCheck(this, MapsList);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root'); //this.tooltip = new Tooltip();
+
+      for (var id in options.maps) {
+        _this.AddMapItem(id, options.maps[id]);
+      }
+
+      return _this;
+    }
+
+    _createClass(MapsList, [{
+      key: "AddMapItem",
+      value: function AddMapItem(id, map) {
+        var li = Dom.Create('li', {
+          className: "maps-list-item",
+          innerHTML: map.title,
+          tabIndex: 0
+        }, this.Node("ul")); //li.addEventListener("mousemove", this.OnLiMouseMove_Handler.bind(this, id, map));
+        //li.addEventListener("mouseleave", this.OnLiMouseLeave_Handler.bind(this, id, map));
+
+        li.addEventListener("click", this.OnLiClick_Handler.bind(this, id, map));
+        li.addEventListener("keydown", this.OnLiKeydown_Handler.bind(this, id, map));
+      }
+      /*
+      OnLiMouseMove_Handler(id, map, ev) {	
+      	this.tooltip.Node("content").innerHTML = map.description;
+      	this.tooltip.Show(ev.pageX - window.scrollX + 20, ev.pageY - window.scrollY);
+      }
+      
+      OnLiMouseLeave_Handler(id, map, ev) {
+      	this.tooltip.Hide();
+      }
+      */
+
+    }, {
+      key: "OnLiKeydown_Handler",
+      value: function OnLiKeydown_Handler(id, map, ev) {
+        // prevent default event on specifically handled keys
+        if (ev.keyCode != 13) return;
+        ev.preventDefault();
+        this.Emit("MapSelected", {
+          id: id,
+          map: map
+        });
+      }
+    }, {
+      key: "OnLiClick_Handler",
+      value: function OnLiClick_Handler(id, map, ev) {
+        this.Emit("MapSelected", {
+          id: id,
+          map: map
+        });
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='maps'>" + "<div class='maps-header-container'>" + "<img class='maps-header-icon' src='".concat(Core.root, "assets/layers.png'></img>") + "<h2 class='maps-header'>nls(Maps_Header)</h2>" + "</div>" + "<ul handle='ul' class='maps-list'></ul>" + // "<div handle='description' class='maps-description'>nls(Maps_Description)</div>" +
+        "</div>";
+      }
+    }]);
+
+    return MapsList;
+  }(Control);
+
+  var Bookmarks = /*#__PURE__*/function (_Control) {
+    _inherits(Bookmarks, _Control);
+
+    var _super = _createSuper(Bookmarks);
+
+    function Bookmarks(options) {
+      var _this;
+
+      _classCallCheck(this, Bookmarks);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root');
+      if (!options.items) return _possibleConstructorReturn(_this);
+      options.items = options.items.sort(function (a, b) {
+        if (a.label < b.label) return -1;
+        if (a.label > b.label) return 1;
+        return 0;
+      });
+      options.items.forEach(function (i) {
+        _this.AddBookmark(i);
+      });
+      return _this;
+    }
+
+    _createClass(Bookmarks, [{
+      key: "AddBookmark",
+      value: function AddBookmark(item) {
+        var li = Dom.Create('li', {
+          className: "bookmarks-list-item",
+          innerHTML: item.label,
+          tabIndex: 0
+        }, this.Node("ul"));
+        li.addEventListener("keydown", this.OnLiKeydown_Handler.bind(this, item));
+        li.addEventListener("click", this.OnLiClick_Handler.bind(this, item));
+      }
+    }, {
+      key: "OnLiKeydown_Handler",
+      value: function OnLiKeydown_Handler(item, ev) {
+        if (ev.keyCode != 13) return;
+        ev.preventDefault();
+        this.Emit("BookmarkSelected", {
+          item: item
+        });
+      }
+    }, {
+      key: "OnLiClick_Handler",
+      value: function OnLiClick_Handler(item, ev) {
+        this.Emit("BookmarkSelected", {
+          item: item
+        });
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='bookmarks'>" + "<div class='bookmarks-header-container'>" + "<img class='bookmarks-header-icon' src='".concat(Core.root, "assets/bookmarks.png'></img>") + "<h2 class='bookmarks-header'>nls(Bookmarks_Header)</h2>" + "</div>" + "<ul handle='ul' class='bookmarks-list'></ul>" + "<div handle='description' class='bookmarks-description'>nls(Bookmarks_Description)</div>" + "</div>";
+      }
+    }]);
+
+    return Bookmarks;
+  }(Control);
+
+  Core.Templatable("Basic.Components.Typeahead", /*#__PURE__*/function (_Templated) {
+    _inherits(Typeahead, _Templated);
+
+    var _super = _createSuper(Typeahead);
+
+    function Typeahead(container, options) {
+      var _this;
+
+      _classCallCheck(this, Typeahead);
+
+      _this = _super.call(this, container, options);
+      _this._items = null;
+      _this._filt = null;
+      _this._curr = null;
+      _this._temp = null;
+
+      _this.Node("input").addEventListener("input", function (ev) {
+        this.OnInputInput_Handler(ev);
+      }.bind(_assertThisInitialized(_this))); // this.Node("input").addEventListener("click", this.OnInputClick_Handler.bind(this));
+
+
+      _this.Node("input").addEventListener("keydown", function (ev) {
+        this.OnInputKeyDown_Handler(ev);
+      }.bind(_assertThisInitialized(_this)));
+
+      _this.Node("input").addEventListener("blur", function (ev) {
+        this.OnInputBlur_Handler(ev);
+      }.bind(_assertThisInitialized(_this)));
+
+      _this.Node("input").addEventListener("focusin", function (ev) {
+        this.OnInputClick_Handler(ev);
+      }.bind(_assertThisInitialized(_this))); // this.Node("input").addEventListener("focusout", this.OnInputBlur_Handler.bind(this));
+
+
+      if (!options) return _possibleConstructorReturn(_this);
+      _this.items = options.items;
+      return _this;
+    }
+
+    _createClass(Typeahead, [{
+      key: "placeholder",
+      set: function set(value) {
+        this.Node('input').setAttribute('placeholder', value);
+      }
+    }, {
+      key: "title",
+      set: function set(value) {
+        this.Node('input').setAttribute('title', value);
+      }
+    }, {
+      key: "items",
+      set: function set(value) {
+        var _this2 = this;
+
+        this._items = value.map(function (i) {
+          var li = Dom.Create("li", {
+            innerHTML: i.label,
+            tabIndex: -1
+          });
+          var item = {
+            data: i,
+            node: li
+          };
+          li.addEventListener("mousedown", _this2.onLiClick_Handler.bind(_this2, item));
+          return item;
+        });
+      }
+    }, {
+      key: "current",
+      get: function get() {
+        return this._curr;
+      },
+      set: function set(value) {
+        this._curr = value;
+      }
+    }, {
+      key: "Empty",
+      value: function Empty() {
+        Dom.Empty(this.Node("list"));
+        this._filt = [];
+      }
+    }, {
+      key: "Fill",
+      value: function Fill(mask) {
+        this._filt = this._items.filter(function (i) {
+          return compare(i.data.label, mask);
+        });
+        var frag = document.createDocumentFragment();
+
+        for (var i = 0; i < this._filt.length; i++) {
+          var curr = this._filt[i]; // Maybe insert <b> at right index instead, faster?
+
+          curr.node.innerHTML = curr.data.label.replace(mask, "<b>".concat(mask, "</b>"));
+          curr.next = this._filt[(i + 1) % this._filt.length];
+          curr.next.prev = curr;
+          Dom.Place(curr.node, frag);
+        }
+
+        Dom.Place(frag, this.Node("list"));
+
+        function compare(label, mask) {
+          return label.toLowerCase().indexOf(mask.toLowerCase()) !== -1;
+        }
+      }
+    }, {
+      key: "UpdateCss",
+      value: function UpdateCss() {
+        Dom.ToggleCss(this.Node("root"), "collapsed", this._filt.length == 0);
+      }
+    }, {
+      key: "Reset",
+      value: function Reset() {
+        if (this._temp) Dom.SetCss(this._temp.node, "");
+        this._temp = null;
+        this.Empty();
+        var value = this.current ? this.current.data.label : "";
+        this.Node("input").value = value;
+      }
+    }, {
+      key: "OnInputInput_Handler",
+      value: function OnInputInput_Handler(ev) {
+        if (ev.target.value.length < 3) return;
+        this.Empty();
+        this.Fill(ev.target.value);
+        this.UpdateCss();
+      }
+    }, {
+      key: "OnInputClick_Handler",
+      value: function OnInputClick_Handler(ev) {
+        if (ev.target.value.length < 3) return;
+        this.Fill(ev.target.value);
+        this.UpdateCss();
+      }
+    }, {
+      key: "OnInputKeyDown_Handler",
+      value: function OnInputKeyDown_Handler(ev) {
+        // prevent default event on specifically handled keys
+        if (ev.keyCode == 40 || ev.keyCode == 38 || ev.keyCode == 13 || ev.keyCode == 27) ev.preventDefault(); // shift + up : select text
+
+        if (ev.shiftKey == true && ev.keyCode == 38) this.nodes.Input.select(); // up or down key : cycle through dropdown
+        else if (ev.keyCode == 40 || ev.keyCode == 38) {
+          this._temp = this._temp || this._filt[this._filt.length - 1];
+          Dom.SetCss(this._temp.node, "");
+          this._temp = ev.keyCode == 40 ? this._temp.next : this._temp.prev;
+          this.Node("input").value = this._temp.data.label;
+          this.ScrollTo(this._temp);
+          Dom.SetCss(this._temp.node, "active");
+        } // enter : select currently focused
+        else if (ev.keyCode == 13) {
+          // if an item is currently selected through arrows, select that one
+          if (this._temp) this.onLiClick_Handler(this._temp); // if a filtered list is being shown, select the first item
+          else if (this._filt.length > 0) this.onLiClick_Handler(this._filt[0]); // nothing is selected (don't think this can happen		    	
+          else {
+            this.OnInputClick_Handler({
+              target: this.Node("input")
+            });
+          }
+        } // if escape key
+        else if (ev.keyCode == 27) this.OnInputBlur_Handler();
+      }
+    }, {
+      key: "OnInputBlur_Handler",
+      value: function OnInputBlur_Handler(ev) {
+        this.Reset();
+        this.UpdateCss();
+      }
+    }, {
+      key: "onLiClick_Handler",
+      value: function onLiClick_Handler(item, ev) {
+        this.current = item;
+        this.Reset();
+        this.UpdateCss();
+        this.Emit("Change", {
+          item: item.data
+        });
+      }
+    }, {
+      key: "ScrollTo",
+      value: function ScrollTo(item) {
+        // create rectangules to know the position of the elements
+        var ul = this.Node("list");
+        var liBx = item.node.getBoundingClientRect();
+        var ulBx = ul.getBoundingClientRect(); //if the element is in this range then it is inside the main container, don't scroll
+
+        if (liBx.bottom > ulBx.bottom) ul.scrollTop = ul.scrollTop + liBx.bottom - ulBx.top - ulBx.height;else if (liBx.top < ulBx.top) ul.scrollTop = ul.scrollTop + liBx.top - ulBx.top;
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='typeahead collapsed'>" + "<input handle='input' type='text' class='input'>" + "<ul handle='list' class='list'></ul>" + "</div>";
+      }
+    }]);
+
+    return Typeahead;
+  }(Templated));
+
+  var Search = /*#__PURE__*/function (_Control) {
+    _inherits(Search, _Control);
+
+    var _super = _createSuper(Search);
+
+    function Search(options) {
+      var _this;
+
+      _classCallCheck(this, Search);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root');
+      _this.layer = options.layer;
+      _this.field = options.field;
+      _this.color = options.color; // TODO : This should probably happen outside of the widget.
+
+      _this.Node('typeahead').items = _this.Itemize(options.items);
+      console.log("new search", options.items);
+      _this.Node('typeahead').placeholder = options.placeholder;
+      _this.Node('typeahead').title = options.title;
+
+      _this.Node('typeahead').On('Change', _this.onTypeaheadChange_Handler.bind(_assertThisInitialized(_this)));
+
+      return _this;
+    }
+
+    _createClass(Search, [{
+      key: "Update",
+      value: function Update(items) {
+        console.log("update search", items);
+        this.Node('typeahead').items = this.Itemize(items);
+      }
+    }, {
+      key: "Itemize",
+      value: function Itemize(items) {
+        var it = JSON.parse(JSON.stringify(items));
+        return it.sort(function (a, b) {
+          return a.label > b.label ? 1 : -1;
+        });
+      }
+    }, {
+      key: "onTypeaheadChange_Handler",
+      value: function onTypeaheadChange_Handler(ev) {
+        var data = {
+          layer: this.layer,
+          field: this.field,
+          color: this.color,
+          item: ev.item
+        };
+        this.Emit('Change', data);
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='search-control mapboxgl-ctrl'>" + "<div handle='typeahead' widget='Basic.Components.Typeahead'></div><br><br>" + "<input type='radio' name='tableCompare' value='0' checked = 'checked' title = 'nls(Add_Comparison_Area_Title1)'> nls(Search_New_Area) </input><br>" + "<input type='radio' name='tableCompare' value='1'  title = 'nls(Add_Comparison_Area_Title2)' disabled> nls(Add_Comparison_Area)</input>" + "</div>";
+      }
+    }]);
+
+    return Search;
+  }(Control);
+
+  var Fullscreen = /*#__PURE__*/function (_Evented) {
+    _inherits(Fullscreen, _Evented);
+
+    var _super = _createSuper(Fullscreen);
+
+    function Fullscreen(options) {
+      var _this;
+
+      _classCallCheck(this, Fullscreen);
+
+      _this = _super.call(this);
+      _this._fs = new mapboxgl.FullscreenControl();
+      _this.options = options;
+      return _this;
+    }
+
+    _createClass(Fullscreen, [{
+      key: "title",
+      set: function set(value) {
+        this._fs._controlContainer.firstChild.title = value;
+      }
+    }, {
+      key: "fullscreen",
+      get: function get() {
+        return this._fs._fullscreen;
+      }
+    }, {
+      key: "onFullscreenClick_Handler",
+      value: function onFullscreenClick_Handler(ev) {
+        if (!this.fullscreen) this.Emit("enterFullscreen", {});else this.Emit("exitFullscreen", {});
+      }
+    }, {
+      key: "onAdd",
+      value: function onAdd(map) {
+        this._container = this._fs.onAdd(map);
+
+        this._fs._controlContainer.firstChild.addEventListener("click", this.onFullscreenClick_Handler.bind(this));
+
+        this._fs._controlContainer.firstChild.removeAttribute("aria-label");
+
+        this.title = this.options.title;
+        this._map = map;
+        return this._container;
+      }
+    }, {
+      key: "onRemove",
+      value: function onRemove() {
+        this._fs.onRemove();
+
+        this._fs._container.parentNode.removeChild(this._fs._container);
+
+        this._map = undefined;
+      }
+    }]);
+
+    return Fullscreen;
+  }(Evented);
+
+  var Navigation = /*#__PURE__*/function (_Evented) {
+    _inherits(Navigation, _Evented);
+
+    var _super = _createSuper(Navigation);
+
+    function Navigation(options) {
+      var _this;
+
+      _classCallCheck(this, Navigation);
+
+      _this = _super.call(this);
+      _this._n = new mapboxgl.NavigationControl({
+        showCompass: options.showCompass,
+        showZoom: options.showZoom
+      });
+      _this.options = options;
+      return _this;
+    }
+
+    _createClass(Navigation, [{
+      key: "titleIn",
+      set: function set(value) {
+        this._n._zoomInButton.title = value;
+      }
+    }, {
+      key: "titleOut",
+      set: function set(value) {
+        this._n._zoomOutButton.title = value;
+      }
+    }, {
+      key: "onFullscreenClick_Handler",
+      value: function onFullscreenClick_Handler(ev) {
+        if (!this.fullscreen) this.Emit("enterFullscreen", {});else this.Emit("exitFullscreen", {});
+      }
+    }, {
+      key: "onAdd",
+      value: function onAdd(map) {
+        this._container = this._n.onAdd(map);
+
+        this._n._zoomInButton.removeAttribute("aria-label");
+
+        this._n._zoomOutButton.removeAttribute("aria-label");
+
+        this.titleIn = this.options.titleIn;
+        this.titleOut = this.options.titleOut;
+        this._map = map;
+        return this._container;
+      }
+    }, {
+      key: "onRemove",
+      value: function onRemove() {
+        this._n.onRemove();
+
+        this._n._container.parentNode.removeChild(this._n._container);
+
+        this._map = undefined;
+      }
+    }]);
+
+    return Navigation;
+  }(Evented);
+
+  var Popup = /*#__PURE__*/function (_Templated) {
+    _inherits(Popup, _Templated);
+
+    var _super = _createSuper(Popup);
+
+    function Popup(css, container) {
+      var _this;
+
+      _classCallCheck(this, Popup);
+
+      _this = _super.call(this, container || document.body);
+      _this.onBody_KeyUp_Bound = _this.onBody_KeyUp.bind(_assertThisInitialized(_this));
+      _this.content = null;
+      _this.h = null;
+
+      _this.Node("close").addEventListener("click", _this.onBtnClose_Click.bind(_assertThisInitialized(_this)));
+
+      if (css) Dom.AddCss(_this.Node("root"), css);
+
+      _this.Node("root").addEventListener("click", _this.onModal_Click.bind(_assertThisInitialized(_this)));
+
+      _this.SetStyle(0, "hidden");
+
+      return _this;
+    }
+
+    _createClass(Popup, [{
+      key: "Content",
+      get: function get() {
+        return this.content;
+      },
+      set: function set(content) {
+        this.content = content;
+        Dom.Place(content, this.Node("body"));
+      }
+    }, {
+      key: "SetStyle",
+      value: function SetStyle(opacity, visibility) {
+        this.Node("root").style.opacity = opacity;
+        this.Node("root").style.visibility = visibility;
+      }
+    }, {
+      key: "Show",
+      value: function Show() {
+        Util.DisableFocusable(Dom.Siblings(this.Node("root")), true);
+        this.h = document.body.addEventListener("keyup", this.onBody_KeyUp_Bound);
+        this.SetStyle(1, "visible");
+        this.Emit("Show", {
+          popup: this
+        });
+        this.Node("close").focus();
+      }
+    }, {
+      key: "Hide",
+      value: function Hide() {
+        Util.DisableFocusable(Dom.Siblings(this.Node("root")), false);
+        document.body.removeEventListener("keyup", this.onBody_KeyUp_Bound);
+        this.SetStyle(0, "hidden");
+        this.Emit("Hide", {
+          popup: this
+        });
+      }
+    }, {
+      key: "onBody_KeyUp",
+      value: function onBody_KeyUp(ev) {
+        if (ev.keyCode == 27) this.Hide();
+      }
+    }, {
+      key: "onModal_Click",
+      value: function onModal_Click(ev) {
+        this.Hide();
+      }
+    }, {
+      key: "onBtnClose_Click",
+      value: function onBtnClose_Click(ev) {
+        this.Hide();
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='popup'>" + "<div class='popup-container'>" + "<div class='popup-header'>" + "<div class='popup-title' handle='title'></div>" + "<button class='close' handle='close'>×</button>" + "</div>" + "<div class='popup-body' handle='body'></div>" + "</div>" + "</div>";
+      }
+    }]);
+
+    return Popup;
+  }(Templated);
+
+  var Menu$1 = /*#__PURE__*/function (_Control) {
+    _inherits(Menu, _Control);
+
+    var _super = _createSuper(Menu);
+
+    function Menu(options) {
+      var _this;
+
+      _classCallCheck(this, Menu);
+
+      _this = _super.call(this, options);
+      _this._container = _this.Node('root');
+      _this.buttons = {};
+      return _this;
+    }
+
+    _createClass(Menu, [{
+      key: "AddButton",
+      value: function AddButton(id, icon, title, hClick) {
+        if (this.buttons[id]) throw new Error("Button already exists in menu.");
+        var root = this.Node("root");
+        var btn = Dom.Create("button", {
+          "title": title,
+          "aria-label": title,
+          "type": "button",
+          "className": "mapboxgl-ctrl-icon"
+        }, root);
+        Dom.Create("img", {
+          "alt": title,
+          "src": icon
+        }, btn);
+        btn.addEventListener("click", hClick);
+        this.buttons[id] = {
+          node: btn
+        };
+        return btn;
+      }
+    }, {
+      key: "AddPopupButton",
+      value: function AddPopupButton(id, icon, title, widget, container) {
+        var popup = new Popup("modal absolute popup-" + id, container);
+        popup.Content = widget.Node("root");
+        var button = this.AddButton(id, icon, title, function (ev) {
+          popup.Show();
+        });
+        popup.On("Hide", this.OnPopupHide_Handler.bind(this, button));
+        this.buttons[id].popup = popup;
+        return popup;
+      }
+    }, {
+      key: "Button",
+      value: function Button(id) {
+        return this.buttons[id] || null;
+      }
+    }, {
+      key: "OnPopupHide_Handler",
+      value: function OnPopupHide_Handler(button, ev) {
+        button.focus();
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='maps-control mapboxgl-ctrl mapboxgl-ctrl-group'></div>";
+      }
+    }]);
+
+    return Menu;
+  }(Control);
+
+  var Menu = /*#__PURE__*/function (_Control) {
+    _inherits(Menu, _Control);
+
+    var _super = _createSuper(Menu);
+
+    function Menu(options) {
+      var _this;
+
+      _classCallCheck(this, Menu);
+
+      _this = _super.call(this, options);
+      _this.controls = {};
+
+      for (var id in options.controls) {
+        _this.AddControl(id, options.controls[id]);
+      }
+
+      _this._container = _this.Node('root');
+      return _this;
+    }
+
+    _createClass(Menu, [{
+      key: "AddControl",
+      value: function AddControl(id, control) {
+        if (this.controls.hasOwnProperty(id)) throw new Error("Control already exists in the group");
+        this.controls[id] = control;
+        Dom.Place(control._container, this.Node("root"));
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div handle='root' class='mapboxgl-ctrl mapboxgl-ctrl-group'></div>";
+      }
+    }]);
+
+    return Menu;
+  }(Control);
+
+  var Map = /*#__PURE__*/function (_Evented) {
+    _inherits(Map, _Evented);
+
+    var _super = _createSuper(Map);
+
+    function Map(options) {
+      var _this;
+
+      _classCallCheck(this, Map);
+
+      _this = _super.call(this);
+      _this.layers = [];
+      _this.original = {};
+      _this.maxExtent = [[-162.0, 41.0], [-32.0, 83.5]];
+      _this.style = options.style;
+      _this.click = _this.OnLayerClick_Handler.bind(_assertThisInitialized(_this));
+      _this.map = new mapboxgl.Map(options);
+      /*
+      // Set the maximum bounds of the map
+      this.SetMaxBounds(this.maxExtent);
+      	this.map.once('styledata', this.OnceStyleData_Handler.bind(this));
+      
+      // this.map.on('click', this.click);
+      
+      this.WrapEvent('moveend', 'MoveEnd');
+      this.WrapEvent('zoomend', 'ZoomEnd');
+      this.WrapEvent('load', 'Load');
+      
+      this.map.once('load', ev => {
+      	// Fix for improve this map in french
+      	this.map.getContainer().querySelector('.mapbox-improve-map').innerHTML = Core.Nls("Mapbox_Improve");
+      })*/
+
+      return _this;
+    }
+
+    _createClass(Map, [{
+      key: "Container",
+      get: function get() {
+        return this.map._container;
+      }
+    }, {
+      key: "Center",
+      get: function get() {
+        return this.map.getCenter();
+      },
+      set: function set(value) {
+        this.map.setCenter(value);
+      }
+    }, {
+      key: "Zoom",
+      get: function get() {
+        return this.map.getZoom();
+      },
+      set: function set(value) {
+        this.map.setZoom(value);
+      }
+    }, {
+      key: "Style",
+      get: function get() {
+        return this.style;
+      }
+    }, {
+      key: "AddSource",
+      value: function AddSource(name, data) {
+        this.map.addSource('odhf', data);
+      }
+    }, {
+      key: "AddControl",
+      value: function AddControl(control, location) {
+        this.map.addControl(control, location);
+      }
+    }, {
+      key: "InfoPopup",
+      value: function InfoPopup(lngLat, html) {
+        var popup = new mapboxgl.Popup({
+          closeOnClick: true
+        }).setLngLat(lngLat).setHTML(html).addTo(this.map);
+        popup._closeButton.innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>';
+
+        popup._closeButton.setAttribute('aria-label', Core.Nls('Mapbox_Close_Popup'));
+
+        popup._closeButton.title = Core.Nls('Mapbox_Close_Popup');
+      }
+    }, {
+      key: "searchSourceLayer",
+      value: function searchSourceLayer(CSDUID, searchID, sourceLayer) {
+        var sourceArray = this.map.querySourceFeatures('composite', {
+          'sourceLayer': 'SLACMACA-200-SAE-Dummy_v6-7olpu6'
+        });
+
+        for (var i = 0, length = sourceArray.length; i < length; i++) {
+          var prop = sourceArray[i].properties[searchID]; //console.log(prop[searchID]);
+
+          if (prop.includes(CSDUID)) {
+            return prop;
+          }
+        }
+
+        return CSDUID;
+      }
+    }, {
+      key: "HighlightArea",
+      value: function HighlightArea(CSDUID, highlightLayers, searchID) {
+        var sourceLayer = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+        for (var i = 0, l = highlightLayers.length; i < l; i++) {
+          var hl = highlightLayers[i]; //console.log(hl);
+          //console.log(CSDUID, searchID);
+
+          if (sourceLayer != null) {
+            CSDUID = this.searchSourceLayer(CSDUID, searchID, sourceLayer);
+          }
+
+          this.map.setFilter(hl, ['in', searchID, CSDUID]); //this.map.setFilter(hl, ['in', CSDUID, ['get', searchID]]);			
+
+          this.ShowLayer(hl);
+        }
+      }
+    }, {
+      key: "SetPaintProperty",
+      value: function SetPaintProperty(layer, property, classes) {
+        this.map.setPaintProperty(layer, property, classes);
+      }
+    }, {
+      key: "Reset",
+      value: function Reset(layers) {
+        var _this2 = this;
+
+        layers.forEach(function (l) {
+          _this2.map.setPaintProperty(l, 'fill-color', _this2.original[l]);
+        });
+        this.original = {};
+      }
+      /*This is used with an array of colors and (single opacity or array of opacity values)*/
+
+    }, {
+      key: "Choropleth",
+      value: function Choropleth(layers, property, legend, opacity) {
+        /*
+        if(Array.isArray(opacity) && Array.isArray(legend) && legend.length > 1){
+        	legend.forEach(function(l, index) {			
+        	var color = l.color.length == 3 ? `rgba(${l.color.join(',')},${opacity[index]})` : `rgba(${l.color.join(',')})`;
+        	
+        	if (l.value) classes.push(l.value);
+        	
+        	classes.push(color);
+        });
+        }
+        else if(!Array.isArray(opacity) &&  Array.isArray(legend) && legend.length > 1) {
+        	legend.forEach(function(l) {			
+        	var color = l.color.length == 3 ? `rgba(${l.color.join(',')},${opacity})` : `rgba(${l.color.join(',')})`;
+        	
+        	if (l.value) classes.push(l.value);
+        	
+        	classes.push(color);
+        });
+        }
+        	layers.forEach(l => {
+        	this.original[l] = this.map.getPaintProperty(l, property);
+        	
+        	this.map.setPaintProperty(l, property, classes)
+        });*/
+      }
+      /*This is used with a single color value and an array of opacity values)*/
+
+    }, {
+      key: "ChoroplethVarOpac",
+      value: function ChoroplethVarOpac(layers, property, legend, opacity) {
+        var _this3 = this;
+
+        var classes = ['case'];
+        var col = [0, 0, 0];
+
+        if (Array.isArray(opacity) && Array.isArray(legend) && legend.length > 1) {
+          legend.forEach(function (l, index) {
+            var color = "rgba(".concat(col.join(','), ",").concat(opacity[index], ")");
+            if (l.value) classes.push(l.value);
+            classes.push(color);
+          });
+        }
+
+        layers.forEach(function (l) {
+          _this3.original[l] = _this3.map.getPaintProperty(l, property);
+
+          _this3.map.setPaintProperty(l, property, classes);
+        });
+      }
+    }, {
+      key: "ReorderLayers",
+      value: function ReorderLayers(layers) {
+        var _this4 = this;
+
+        layers.forEach(function (l) {
+          return _this4.map.moveLayer(l);
+        });
+      }
+    }, {
+      key: "GetLayer",
+      value: function GetLayer(layer) {
+        return this.map.getLayer(layer) || null;
+      }
+    }, {
+      key: "ShowLayer",
+      value: function ShowLayer(layer) {
+        this.map.setLayoutProperty(layer, 'visibility', 'visible');
+      }
+    }, {
+      key: "HideLayer",
+      value: function HideLayer(layer) {
+        this.map.setLayoutProperty(layer, 'visibility', 'none');
+      }
+    }, {
+      key: "HideLayers",
+      value: function HideLayers(layers) {
+        var _this5 = this;
+
+        layers.forEach(function (l) {
+          return _this5.HideLayer(l);
+        });
+      }
+    }, {
+      key: "ShowLayers",
+      value: function ShowLayers(layers) {
+        var _this6 = this;
+
+        layers.forEach(function (l) {
+          return _this6.ShowLayer(l);
+        });
+      }
+    }, {
+      key: "FitBounds",
+      value: function FitBounds(bounds, options) {
+        this.map.fitBounds(bounds, options);
+      }
+    }, {
+      key: "SetMaxBounds",
+      value: function SetMaxBounds(bounds) {
+        this.map.setMaxBounds(bounds);
+      }
+    }, {
+      key: "SetStyle",
+      value: function SetStyle(style) {
+        this.style = style;
+        this.map.once('styledata', this.OnceStyleData_Handler.bind(this));
+        this.map.setStyle(style);
+      }
+    }, {
+      key: "SetClickableMap",
+      value: function SetClickableMap(layers) {
+        this.map.on('click', this.click);
+      }
+    }, {
+      key: "SetClickableLayers",
+      value: function SetClickableLayers(layers) {
+        var _this7 = this;
+
+        layers.forEach(function (l) {
+          return _this7.map.off('click', l, _this7.click);
+        });
+        this.layers = layers;
+        this.layers.forEach(function (l) {
+          return _this7.map.on('click', l, _this7.click);
+        });
+      }
+    }, {
+      key: "QueryRenderedFeatures",
+      value: function QueryRenderedFeatures(point, layers) {
+        return this.map.queryRenderedFeatures(point, {
+          layers: layers
+        });
+      }
+    }, {
+      key: "OnceStyleData_Handler",
+      value: function OnceStyleData_Handler(ev) {
+        this.Emit('StyleChanged', ev);
+      }
+    }, {
+      key: "OnLayerClick_Handler",
+      value: function OnLayerClick_Handler(ev) {
+        this.Emit('Click', ev);
+      }
+    }, {
+      key: "WrapEvent",
+      value: function WrapEvent(oEv, nEv) {
+        var _this8 = this;
+
+        var f = function f(ev) {
+          return _this8.Emit(nEv, ev);
+        };
+
+        this.map.on(oEv, f);
+      }
+    }], [{
+      key: "Token",
+      get: function get() {
+        return mapboxgl.accessToken;
+      },
+      set: function set(value) {
+        mapboxgl.accessToken = value;
+      }
+    }]);
+
+    return Map;
+  }(Evented);
+
+  var Factory = /*#__PURE__*/function () {
+    function Factory() {
+      _classCallCheck(this, Factory);
+    }
+
+    _createClass(Factory, null, [{
+      key: "Map",
+      value: function Map$1(container, token, style, center, zoom) {
+        Map.Token = token;
+        return new Map({
+          container: container,
+          style: style,
+          center: center,
+          zoom: zoom
+        });
+      }
+      /*
+      static NavigationControl(showCompass, showZoom) {
+      	return new mapboxgl.NavigationControl({ showCompass:showCompass, showZoom:showZoom });
+      }
+      */
+
+    }, {
+      key: "NavigationControl",
+      value: function NavigationControl(showCompass, showZoom, titleIn, titleOut) {
+        return new Navigation({
+          showCompass: showCompass,
+          showZoom: showZoom,
+          titleIn: titleIn,
+          titleOut: titleOut
+        });
+      }
+    }, {
+      key: "FullscreenControl",
+      value: function FullscreenControl(title) {
+        return new Fullscreen({
+          title: title
+        });
+      }
+    }, {
+      key: "GeolocateControl",
+      value: function GeolocateControl() {
+        return new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        });
+      }
+    }, {
+      key: "ScaleControl",
+      value: function ScaleControl(units) {
+        return new mapboxgl.ScaleControl({
+          maxWidth: 80,
+          unit: units
+        });
+      }
+    }, {
+      key: "AttributionControl",
+      value: function AttributionControl() {
+        return new mapboxgl.AttributionControl({
+          compact: true
+        });
+      } // TODO : LegendControl requires too many parameters CHANGE
+
+    }, {
+      key: "LegendControl",
+      value: function LegendControl(options) {
+        return new Legend$1(options); //return new Legend({ legend:legend, title:title, banner:banner, subtitle:subtitle, hasCheckbox:hasCheckbox});
+      }
+    }, {
+      key: "TocControl",
+      value: function TocControl(toc) {
+        return new Toc({
+          toc: toc
+        });
+      }
+    }, {
+      key: "OpacityControl",
+      value: function OpacityControl(opacity) {
+        return new Legend({
+          opacity: opacity
+        });
+      }
+    }, {
+      key: "DownloadControl",
+      value: function DownloadControl(link) {
+        return new Download({
+          link: link
+        });
+      }
+    }, {
+      key: "MapsListControl",
+      value: function MapsListControl(maps) {
+        return new MapsList({
+          maps: maps
+        });
+      }
+    }, {
+      key: "BookmarksControl",
+      value: function BookmarksControl(items) {
+        return new Bookmarks({
+          items: items
+        });
+      }
+    }, {
+      key: "MenuControl",
+      value: function MenuControl(items) {
+        return new Menu$1({
+          items: items
+        });
+      }
+    }, {
+      key: "SearchControl",
+      value: function SearchControl(items, placeholder, title) {
+        return new Search({
+          items: items,
+          placeholder: placeholder,
+          title: title
+        });
+      }
+    }, {
+      key: "Group",
+      value: function Group(controls) {
+        return new Menu({
+          controls: controls
+        });
+      }
+    }]);
+
+    return Factory;
+  }();
+
+  var Workaround = /*#__PURE__*/function () {
+    function Workaround() {
+      _classCallCheck(this, Workaround);
+    }
+
+    _createClass(Workaround, null, [{
+      key: "FixField",
+      value: // TODO : This probably won't work for other databases unless they keep the same field namespaceURI
+      // It's a workaround for the ODHF because there are still some issues with the data at the time of launch
+      function FixField(field, value) {
+        if (field === "province" || field === "Prov_Terr") return this.LookupProvince(value, Core.locale);
+        if (field === "odhf_facility_type" || field === "ODCAF_Facility_Type") return this.LookupType(value, Core.locale);
+        if (field === "postal_code" || field === "Postal_Code") return value.toUpperCase().replace(" ", "&nbsp;");
+        if (field === "facility_name" || field === "Facility_Name") return value.charAt(0).toUpperCase() + value.slice(1);
+        if (field === "street_name" || field === "Street_Name") return value.charAt(0).toUpperCase() + value.slice(1);
+        if (field === "city" || field === "City") return value.charAt(0).toUpperCase() + value.slice(1);
+        if (value == -999) value = ".";
+        if (value == -99) value = "..";
+        if (value == -9) value = "F";
+        return value;
+      }
+    }, {
+      key: "LookupProvince",
+      value: function LookupProvince(abbr, locale) {
+        abbr = abbr.trim(); // Hidden whitespace character at the end, weird.
+
+        if (abbr === 'nl') return locale === "en" ? "Newfoundland and Labrador" : "Terre-Neuve-et-Labrador";
+        if (abbr === 'pe') return locale === "en" ? "Prince Edward Island" : "Île-du-Prince-Édouard";
+        if (abbr === 'ns') return locale === "en" ? "Nova Scotia" : "Nouvelle-Écosse";
+        if (abbr === 'nb') return locale === "en" ? "New Brunswick" : "Nouveau-Brunswick";
+        if (abbr === 'qc') return locale === "en" ? "Quebec" : "Québec";
+        if (abbr === 'on') return locale === "en" ? "Ontario" : "Ontario";
+        if (abbr === 'mb') return locale === "en" ? "Manitoba" : "Manitoba";
+        if (abbr === 'sk') return locale === "en" ? "Saskatchewan" : "Saskatchewan";
+        if (abbr === 'ab') return locale === "en" ? "Alberta" : "Alberta";
+        if (abbr === 'bc') return locale === "en" ? "British Columbia" : "Colombie-Britannique";
+        if (abbr === 'yt') return locale === "en" ? "Yukon" : "Yukon";
+        if (abbr === 'nt') return locale === "en" ? "Northwest Territories" : "Territoires du Nord-Ouest";
+        if (abbr === 'nu') return locale === "en" ? "Nunavut" : "Nunavut";
+      }
+    }, {
+      key: "LookupType",
+      value: function LookupType(type, locale) {
+        if (type === "Hospitals") {
+          return locale === "en" ? "Hospitals" : "Hôpitaux";
+        } else if (type === "Nursing and residential care facilities") {
+          return locale === "en" ? "Nursing and residential care facilities" : "Établissements de soins infirmiers et de soins pour bénéficiaires internes";
+        } else if (type === "Ambulatory health care services") {
+          return locale === "en" ? "Ambulatory health care services" : "Services de soins de santé ambulatoires";
+        } else if (type === "artist") {
+          return locale === "en" ? "Artist" : "Artiste";
+        } else if (type === "art or cultural centre") {
+          return locale === "en" ? "Art or Cultural Centre" : "Centre des arts ou de culture";
+        } else if (type === "festival site") {
+          return locale === "en" ? "Festival Site" : "Site de festival";
+        } else if (type === "gallery") {
+          return locale === "en" ? "Gallery" : "Galerie";
+        } else if (type === "heritage or historic site") {
+          return locale === "en" ? "Heritage or Historic Site" : "Site patrimonial ou historique";
+        } else if (type === "library or archives") {
+          return locale === "en" ? "Library or Archives" : "Bibliothèque ou Archives";
+        } else if (type === "museum") {
+          return locale === "en" ? "Museum" : "Musée";
+        } else if (type === "theatre/performance and concert hall") {
+          return locale === "en" ? "Theatres/Performance and Concert Hall" : "Théâtres/salles de spectacle et salles de concert";
+        } else if (type === "miscellaneous") {
+          return locale === "en" ? "Miscellaneous" : "Divers";
+        }
+      }
+    }]);
+
+    return Workaround;
+  }();
+
+  var Table = Core.Templatable("Basic.Components.Table", /*#__PURE__*/function (_Templated) {
+    _inherits(Table, _Templated);
+
+    var _super = _createSuper(Table);
+
+    function Table(container, options) {
+      var _this;
+
+      _classCallCheck(this, Table);
+
+      _this = _super.call(this, container, options);
+      _this.path = options.path;
+      _this.summary = options.summary;
+      _this.fields = options.fields;
+      _this.title = options.title;
+      _this.eFileDownload = null;
+      _this.fFileDownload = null;
+      _this.fileReplace = null;
+      _this.current = {
+        item: null,
+        page: 1,
+        max: null,
+        holding: null
+      }; // this.Node("description").innerHTML = options.description;
+
+      _this.Node('prev').addEventListener('click', _this.OnButtonPrev_Handler.bind(_assertThisInitialized(_this)));
+
+      _this.Node('next').addEventListener('click', _this.OnButtonNext_Handler.bind(_assertThisInitialized(_this)));
+
+      _this.Node('save').addEventListener('click', _this.OnButtonSave_Handler.bind(_assertThisInitialized(_this)));
+
+      _this.Node('saveAll').addEventListener('click', _this.OnButtonSaveAll_Handler.bind(_assertThisInitialized(_this)));
+
+      _this.fields.forEach(function (f) {
+        return _this.AddHeader(f);
+      });
+
+      return _this;
+    }
+
+    _createClass(Table, [{
+      key: "caption",
+      set: function set(value) {
+        this.Node('caption').innerHTML = value;
+      }
+    }, {
+      key: "Template",
+      value: function Template() {
+        return "<div class='table-widget'>" + "<h2 handle='title'>nls(Table_Title_Default)</h2>" + "<a id='lode-table' handle='message' class='table-message'>nls(Table_Message)</a>" + "<div handle='table' class='table-container hidden'>" + "<summary handle='description'></summary>" + "<table>" + "<thead>" + "<tr handle='header'></tr>" + "</thead>" + "<tbody handle='body'></tbody>" + "</table>" + "<div class='navigation'>" + "<button handle='prev' title='nls(Table_Previous_Button)' disabled><img src='".concat(Core.root, "assets/arrow-left.png'></button>") + "<span handle='current' class='current'></span>" + "<button handle='next' title='nls(Table_Next_Button)' disabled><img src='".concat(Core.root, "assets/arrow-right.png'></button>") + "  <button handle='save' title='nls(Table_Download_Button)'><img src='".concat(Core.root, "assets/download.png'></button>") + "  <button handle='saveAll' title='nls(Full_Table_Download_Button)' disabled><img src='".concat(Core.root, "assets/downloadAll.png'></button>") + "</div>" + "</div>" + "</div>";
+      }
+    }, {
+      key: "AddHeader",
+      value: function AddHeader(f) {
+        Dom.Create("th", {
+          innerHTML: f.label,
+          className: f.type
+        }, this.Node("header"));
+      }
+    }, {
+      key: "GetDataFileUrl",
+      value: function GetDataFileUrl(file) {
+        var url = window.location.href.split("/");
+        url.splice(url.length - 1, 1);
+        url.push(file);
+        return url.join("/");
+      } //Update the table content with the correct data of the DBU
+
+    }, {
+      key: "Populate",
+      value: function Populate(item, data) {
+        var _this2 = this;
+
+        Dom.Empty(this.Node('body'));
+        data.shift();
+        data.forEach(function (rData) {
+          if (rData.length == 0) return;
+          var row = Dom.Create("tr", {
+            className: "table-row"
+          }, _this2.Node('body'));
+          rData.forEach(function (cData, i) {
+            // WORKAROUND to fix fields (there's another one in application.js)
+            var value = Workaround.FixField(_this2.fields[i].id, cData);
+            var css = "table-cell ".concat(_this2.fields[i].type);
+            Dom.Create("td", {
+              innerHTML: value,
+              className: css
+            }, row);
+          });
+        });
+      }
+      /**
+      * Update the table with the correct DBUID data 
+      *
+      * Parameters :
+      * item : the item that was used in the search bar
+      * Return : none
+      */
+
+    }, {
+      key: "UpdateTable",
+      value: function UpdateTable(item, page) {
+        var _this3 = this;
+
+        // Set current DB
+        var addComparison = false;
+        var radios = document.getElementsByName('tableCompare');
+        console.log("Updating table", radios);
+
+        for (var i = 0; i < radios.length; i++) {
+          console.log(i, radios[i].value);
+
+          if (radios[i].value == "1" && radios[0].disabled == false) {
+            if (radios[i].disabled) {
+              radios[i].disabled = false;
+            }
+
+            if (radios[i].checked) {
+              addComparison = true;
+              break;
+            }
+
+            console.log("Updating table", radios[i].disabled);
+          }
+        }
+
+        if (addComparison == false) {
+          this.current.page = page || 1;
+          this.current.item = item;
+          this.current.max = this.summary[item.id] || 0;
+          this.Node("title").innerHTML = Util.Format(this.title, [item.label]);
+
+          if (this.current.max == 0) {
+            this.Node("message").innerHTML = Core.Nls("Table_No_Data");
+            Dom.AddCss(this.Node("table"), "hidden");
+            Dom.RemoveCss(this.Node("message"), "hidden");
+            return;
+          }
+
+          var file = "".concat(Core.root).concat(this.path, "\\").concat(this.current.item.id, "_").concat(this.current.page, ".json");
+          var url = this.GetDataFileUrl(file);
+          Net.Request(url).then(function (ev) {
+            var data = Util.ParseCsv(ev.result);
+
+            _this3.Populate(item, data); // Update table UI
+
+
+            _this3.Node('current').innerHTML = Core.Nls("Table_Current_Page", [_this3.current.page, _this3.current.max]);
+
+            _this3.ToggleButtons();
+
+            Dom.ToggleCss(_this3.Node("message"), "hidden", true);
+            Dom.ToggleCss(_this3.Node("table"), "hidden", false);
+          }, this.OnAsyncFailure);
+        } else {
+          var itemArray = [];
+          var duplicate = false;
+
+          if (Array.isArray(this.current.item)) {
+            itemArray = this.current.item;
+          } else {
+            itemArray = [this.current.item];
+          }
+
+          for (var i = 0, length = itemArray.length; i < length; i++) {
+            var itemTest = itemArray[i];
+
+            if (itemTest.id == item.id) {
+              duplicate = true;
+              break;
+            }
+          }
+
+          if (duplicate) {
+            return;
+          }
+
+          if (Array.isArray(this.current.item)) {
+            this.current.item.push(item);
+          } else if (this.current.item == null) {
+            this.current.item = [item];
+          } else {
+            this.current.item = [this.current.item, item];
+          }
+
+          this.current.page = page || 1;
+          this.current.max = this.summary[item.id] || 0;
+          this.Node("title").innerHTML = Util.Format(this.title, [this.current.item[0].label]) + Core.Nls("Table_Title_Multiple_Suffix");
+
+          if (this.current.max == 0) {
+            this.Node("message").innerHTML = Core.Nls("Table_No_Data");
+            Dom.AddCss(this.Node("table"), "hidden");
+            Dom.RemoveCss(this.Node("message"), "hidden");
+            return;
+          }
+
+          var promises = [];
+          this.current.holding = null;
+
+          for (var i = 0; i < this.current.item.length; i++) {
+            var it = this.current.item[i]; // Get CSV file for selected DB. Extension is json because of weird server configuration. Content is csv.		
+
+            var file = "".concat(Core.root).concat(this.path, "\\").concat(it.id, "_").concat(this.current.page, ".json");
+            var url = this.GetDataFileUrl(file);
+            var p = Net.Request(url).then(function (ev) {
+              _this3.current.holding = ev.result;
+              return ev.result;
+            }, this.OnAsyncFailure);
+            promises.push(p);
+          }
+
+          Promise.all(promises).then(function (values) {
+            var res = Util.JoinData(values);
+            var data = Util.ParseCsv(res);
+
+            _this3.Populate(item, data); // Update table UI
+
+
+            _this3.Node('current').innerHTML = Core.Nls("Table_Current_Page", [_this3.current.page, _this3.current.max]);
+
+            _this3.ToggleButtons();
+
+            Dom.ToggleCss(_this3.Node("message"), "hidden", true);
+            Dom.ToggleCss(_this3.Node("table"), "hidden", false);
+          });
+        }
+      }
+    }, {
+      key: "SaveFullTable",
+      value: function SaveFullTable(fname) {
+        var file = "".concat(Core.root).concat(this.path, "//").concat(fname);
+        var url = this.GetDataFileUrl(file);
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = url;
+        hiddenElement.target = '_blank'; //provide the name for the CSV file to be downloaded;
+
+        if (this.fileReplace == null) {
+          this.fileReplace = ".csv";
+        }
+
+        var rName = fname.replace(".json", this.fileReplace);
+        hiddenElement.download = rName;
+        hiddenElement.click();
+      }
+    }, {
+      key: "SaveTable",
+      value: function SaveTable() {
+        var _this4 = this;
+
+        // Save table to csv format;
+        var itemArray = [];
+
+        if (Array.isArray(this.current.item)) {
+          itemArray = this.current.item;
+        } else {
+          itemArray = [this.current.item];
+        }
+
+        var promises = [];
+
+        for (var i = 0; i < itemArray.length; i++) {
+          var it = itemArray[i]; // Get CSV file for selected DB. Extension is json because of weird server configuration. Content is csv.
+
+          if (this.current.max > 0) {
+            for (var j = 1; j <= this.current.max; j++) {
+              var file = "".concat(Core.root).concat(this.path, "\\").concat(it.id, "_").concat(j, ".json");
+              var url = this.GetDataFileUrl(file);
+              var p = Net.Request(url).then(function (ev) {
+                return ev.result;
+              }, this.OnAsyncFailure);
+              promises.push(p);
+            }
+          } else {
+            var file = "".concat(Core.root).concat(this.path, "\\").concat(it.id, "_").concat(this.current.page, ".json");
+            var url = this.GetDataFileUrl(file);
+            var p = Net.Request(url).then(function (ev) {
+              return ev.result;
+            }, this.OnAsyncFailure);
+            promises.push(p);
+          }
+        }
+
+        Promise.all(promises).then(function (values) {
+          var res = Util.JoinData(values); //Combine all the csv files into a single table
+
+          var lines = res.split('\n');
+          var ids = lines[0].split(',');
+          var newids = [];
+
+          for (var i = 0; i < ids.length; i++) {
+            newids.push(_this4.fields[i].label);
+          }
+
+          var newLines = [];
+
+          for (var j = 0; j < lines.length; j++) {
+            var l = lines[j];
+            var nl = [];
+            var ids = l.split(',');
+
+            for (var i = 0; i < ids.length; i++) {
+              var st = ids[i];
+
+              if (st == "-999.0") {
+                st = ".";
+              }
+
+              if (st == "-99.0") {
+                st = "..";
+              }
+
+              if (st == "-9.0") {
+                st = "F";
+              }
+
+              if (st == "-999") {
+                st = ".";
+              }
+
+              if (st == "-99") {
+                st = "..";
+              }
+
+              if (st == "-9") {
+                st = "F";
+              }
+
+              if (st == -999) {
+                st = ".";
+              }
+
+              if (st == -99) {
+                st = "..";
+              }
+
+              if (st == -9) {
+                st = "F";
+              }
+
+              nl.push(st);
+            }
+
+            var na = nl.join(',');
+            newLines.push(na);
+          }
+
+          var fline = newids.join(',');
+          newLines.shift();
+          newLines.unshift(fline);
+          res = newLines.join('\n');
+          var hiddenElement = document.createElement('a'); //hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(res);  
+
+          hiddenElement.href = "data:text/csv;charset=utf-8,%EF%BB%BF" + encodeURI(res);
+          hiddenElement.target = '_blank'; //provide the name for the CSV file to be downloaded  
+
+          hiddenElement.download = Core.Nls("Download_File_Name") + '.csv';
+          hiddenElement.click();
+        });
+      }
+    }, {
+      key: "ToggleButtons",
+      value: function ToggleButtons() {
+        this.Node('prev').disabled = this.current.page <= 1;
+        this.Node('next').disabled = this.current.page >= this.current.max;
+        this.Node('saveAll').disabled = this.eFileDownload == null && this.fFileDownload == null;
+      }
+    }, {
+      key: "OnButtonPrev_Handler",
+      value: function OnButtonPrev_Handler(ev) {
+        this.current.page--;
+        this.UpdateTable(this.current.item, this.current.page);
+      }
+    }, {
+      key: "OnButtonNext_Handler",
+      value: function OnButtonNext_Handler(ev) {
+        this.current.page++;
+        this.UpdateTable(this.current.item, this.current.page);
+      }
+    }, {
+      key: "OnButtonSave_Handler",
+      value: function OnButtonSave_Handler(ev) {
+        this.SaveTable();
+      }
+    }, {
+      key: "OnButtonSaveAll_Handler",
+      value: function OnButtonSaveAll_Handler(ev) {
+        var file = "";
+
+        if (Core.locale == "en") {
+          file = this.eFileDownload;
+        } else if (Core.locale == "fr") {
+          file = this.fFileDownload;
+        }
+
+        console.log("current file is", file);
+        this.SaveFullTable(file);
+      }
+    }, {
+      key: "OnAsyncFailure",
+      value: function OnAsyncFailure(ev) {
+        console.log(ev.error.toString());
+      }
+    }]);
+
+    return Table;
+  }(Templated));
+
+  /**
+   * The Store class contains various utility methods used to store lode-viewer map 
+   * properties in localStorage.
+   * @class
+   */
+  var Store = /*#__PURE__*/function () {
+    function Store() {
+      _classCallCheck(this, Store);
+    }
+
+    _createClass(Store, null, [{
+      key: "Map",
+      get:
+      /**
+       * Get the lode-map value from localStorage
+       * @returns {string} - map name
+       */
+      function get() {
+        return localStorage.getItem("lode-map") || "trans";
+      }
+      /**
+       * Set the lode-map value in localStorage
+       * @param {string} value - map name (e.g. odhf, odcaf) 
+       */
+      ,
+      set: function set(value) {
+        localStorage.setItem("lode-map", value);
+      }
+      /**
+       * Get the lode-center-lat latitude value from localStorage
+       * @returns {number} - latitude value
+       */
+
+    }, {
+      key: "Lat",
+      get: function get() {
+        return localStorage.getItem("lode-center-lat") || 60.847;
+      }
+      /**
+       * Set the lode-center-lat latitude value from localStorage
+       * @param {number} value - latitude value
+       */
+      ,
+      set: function set(value) {
+        localStorage.setItem("lode-center-lat", value);
+      }
+      /**
+       * Get the lode-center-lng longitude value from localStorage
+       * @returns {number} - longitude value
+       */
+
+    }, {
+      key: "Lng",
+      get: function get() {
+        return localStorage.getItem("lode-center-lng") || -105.3905;
+      }
+      /**
+       * Set the lode-center-lng longitude value from localStorage
+       * @param {number} value - longitude value
+       */
+      ,
+      set: function set(value) {
+        localStorage.setItem("lode-center-lng", value);
+      }
+      /**
+       * Get the lode-zoom map zoom level from localStorage
+       * @returns {number} map zoom level
+       */
+
+    }, {
+      key: "Zoom",
+      get: function get() {
+        return localStorage.getItem("lode-zoom") || 3;
+      }
+      /**
+       * Set the lode-zoom map zoom level from localStorage
+       * @param {number} value - map zoom level
+       */
+      ,
+      set: function set(value) {
+        localStorage.setItem("lode-zoom", value);
+      }
+      /**
+       * Get the lode-opacity vector opacity level from localStorage
+       * @returns {number} - opacity value
+       */
+
+    }, {
+      key: "Opacity",
+      get: function get() {
+        return localStorage.getItem("lode-opacity") || 0.75;
+      }
+      /**
+       * Set the lode-opacity vector opacity level in localStorage
+       * @param {number} value - opacity value ranging from 0 - 1.
+       */
+      ,
+      set: function set(value) {
+        localStorage.setItem("lode-opacity", value);
+      }
+      /**
+       * Get the lode-layer layer from localStorage
+       * @returns {string} - layer name
+       */
+
+    }, {
+      key: "Layer",
+      get: function get() {
+        return localStorage.getItem("lode-layer") || "da";
+      }
+      /**
+       * Set the lode-layer layer from localStorage
+       * @param {string} value - layer name
+       */
+      ,
+      set: function set(value) {
+        localStorage.setItem("lode-layer", value);
+      }
+    }]);
+
+    return Store;
+  }();
+
+  var ProxApp = /*#__PURE__*/function (_Templated) {
+    _inherits(ProxApp, _Templated);
+
+    var _super = _createSuper(ProxApp);
+
+    function ProxApp(node, config) {
+      var _this;
+
+      _classCallCheck(this, ProxApp);
+
+      _this = _super.call(this, node);
+      _this.initialized = 0;
+      _this.config = config;
+      _this.current = _this.config.maps[Store.Map];
+      if (!_this.current) _this.current = Util.FirstProperty(_this.config.maps);
+
+      _this.AddMap();
+
+      _this.search = _this.AddSearch();
+
+      _this.AddBaseControls();
+
+      _this.AddGroup(); //Legend, etc.
+
+
+      _this.AddMenu();
+
+      _this.ReloadTable();
+
+      _this.map.map.on('idle', function () {
+        if (_this.initialized == 0) {
+          _this.initialized = 1;
+
+          _this.ReloadMap();
+        }
+      });
+
+      return _this;
+    }
+
+    _createClass(ProxApp, [{
+      key: "Template",
+      value: function Template() {
+        return "<div handle='presentation' class='instructions'>nls(Map_Presentation_1)</div>" + "<div handle='presentation' class='instructions'>nls(Map_Presentation_2)</div>" + "<div class='search-container'>" + "<span class='wb-inv'>nls(Inv_Search_Instructions)</span>" + "<label class='search-label'>nls(App_Search_Label)" + "<div handle='search' class='search'></div>" + "</label>" + "<div class='inv-container'>" + "<a href='#lode-table' class='wb-inv wb-show-onfocus wb-sl'>nls(Inv_Skip_Link)</a>" + "</div>" + "</div>" + "<div handle='instructions' class='instructions'>nls(Map_Description)</div>" + "<div class='map-container'>" + "<div handle='map' class='map'></div>" + "</div>" + "<div class='table-container'>" + "<div handle='table' class='table'></div>" + "</div>" + "<h2 handle='variableTitle'>nls(VariableTitle_Default)</h2>" + "<div class='table-container'>" + "<div handle='variables' class='table'></div>" + "</div>";
+      }
+    }, {
+      key: "AddMap",
+      value: function AddMap() {
+        var token = "pk.eyJ1IjoiYWJrYW11bnJvIiwiYSI6ImNram5keWdzbTU3engyeXA5cjd2azIxZGYifQ.HDVwM7Oycp_5IQ_CtOZ8mw"; //var token = "pk.eyJ1IjoiYWJrYW11bnJvIiwiYSI6ImNram5keWdzbTU3engyeXA5cjd2azIxZGYifQ.HDVwM7Oycp_5IQ_CtOZ8mw";  //My token
+
+        this.map = Factory.Map(this.Node("map"), token, this.current.Style, [Store.Lng, Store.Lat], Store.Zoom); // Hooking up all events 
+
+        this.map.On("StyleChanged", this.OnMapStyleChanged_Handler.bind(this));
+        this.map.On("MoveEnd", this.OnMapMoveEnd_Handler.bind(this));
+        this.map.On("ZoomEnd", this.OnMapZoomEnd_Handler.bind(this));
+        this.map.On("Click", this.OnMapClick_Handler.bind(this));
+        this.map.SetClickableMap();
+        this.Node("variables").innerHTML = this.current.variables[Core.locale];
+      }
+    }, {
+      key: "AddBaseControls",
+      value: function AddBaseControls() {
+        var fullscreen = Factory.FullscreenControl(Core.Nls("FullScreen_Title"));
+        var navigation = Factory.NavigationControl(false, true, Core.Nls("Navigation_ZoomIn_Title"), Core.Nls("Navigation_ZoomOut_Title"));
+        var scale = Factory.ScaleControl("metric");
+        this.map.AddControl(fullscreen, "top-left");
+        this.map.AddControl(navigation, "top-left");
+        this.map.AddControl(scale);
+      }
+    }, {
+      key: "AddSearch",
+      value: function AddSearch() {
+        var itemHolding = null;
+
+        if (this.current.geographies == null) {
+          itemHolding = this.config.search.items.map(function (i) {
+            return {
+              id: i[0],
+              name: i[1],
+              label: "".concat(i[1], " (").concat(i[0], ")"),
+              extent: [[i[2], i[3]], [i[4], i[5]]]
+            };
+          });
+        } else {
+          var items = [];
+
+          for (var a = 0, b = this.current.geographies.length; a < b; a++) {
+            var geo = this.current.geographies[a];
+            var copy = JSON.parse(JSON.stringify(this.config.search[geo]));
+            var tempItems = []; //console.log("new map ", geo, this.config.search[geo]);
+
+            tempItems = copy.map(function (i) {
+              return {
+                id: i[0],
+                name: i[1],
+                label: "".concat(i[1], " (").concat(i[0], ")"),
+                extent: [[i[2], i[3]], [i[4], i[5]]]
+              };
+            });
+            items.push.apply(items, _toConsumableArray(tempItems));
+          } //this.config.search.items = items;	
+
+
+          itemHolding = items; //console.log("new map22 ", "items", this.config.search["items"]);			
+        } // Add top-left search bar
+
+
+        var search = Factory.SearchControl(itemHolding, Core.Nls("Search_Placeholder"), Core.Nls("Search_Title"));
+        search.Place(this.Node("search"));
+        search.On("Change", this.OnSearchChange_Handler.bind(this));
+        search.Node("typeahead").Node("input").id = "lode-search";
+        var radios = document.getElementsByName('tableCompare'); //console.log("suppress comparison is", this.current.suppressComparison);
+
+        if (this.current.suppressComparison == false) {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].value == "0") {
+              radios[i].disabled = false;
+              radios[i].checked = true;
+            }
+
+            if (radios[i].value == "1") {
+              radios[i].checked = false;
+              radios[i].disabled = true;
+            }
+          }
+        } else {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            radios[i].disabled = true;
+            radios[i].checked = false;
+          }
+        }
+
+        return search;
+      }
+    }, {
+      key: "UpdateSearch",
+      value: function UpdateSearch() {
+        //console.log("Updating search", this.current.geographies);
+        var itemHolding = null;
+
+        if (this.current.geographies == null) {
+          itemHolding = this.config.search.items.map(function (i) {
+            return {
+              id: i[0],
+              name: i[1],
+              label: "".concat(i[1], " (").concat(i[0], ")"),
+              extent: [[i[2], i[3]], [i[4], i[5]]]
+            };
+          });
+        } else {
+          var items = [];
+
+          for (var a = 0, b = this.current.geographies.length; a < b; a++) {
+            var geo = this.current.geographies[a];
+            var copy = JSON.parse(JSON.stringify(this.config.search[geo]));
+            var tempItems = [];
+            tempItems = copy.map(function (i) {
+              return {
+                id: i[0],
+                name: i[1],
+                label: "".concat(i[1], " (").concat(i[0], ")"),
+                extent: [[i[2], i[3]], [i[4], i[5]]]
+              };
+            });
+            items.push.apply(items, _toConsumableArray(tempItems));
+          } //this.config.search.items = items;	
+
+
+          itemHolding = items; //console.log("new map22 ", "items", this.config.search["items"]);			
+        }
+
+        var search = this.search;
+        search.Update(itemHolding);
+        var radios = document.getElementsByName('tableCompare');
+
+        if (this.current.suppressComparison == false) {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].value == "0") {
+              radios[i].disabled = false;
+              radios[i].checked = true;
+            }
+
+            if (radios[i].value == "1") {
+              radios[i].checked = false;
+              radios[i].disabled = true;
+            }
+          }
+        } else {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            radios[i].disabled = true;
+            radios[i].checked = false;
+          }
+        }
+      }
+    }, {
+      key: "AddGroup",
+      value: function AddGroup() {
+        // Top-right group for legend, etc.		
+        this.group = {
+          //CHANGE
+          //legend : Factory.LegendControl(this.current.Legend, this.current.FullTitle, this.current.Subtitle)
+          legend: Factory.LegendControl(this.current)
+        };
+        this.map.AddControl(Factory.Group(this.group)); // Assumption: All dataset will have a legend with toggles because it's all point data
+
+        this.group.legend.On("LegendChange", this.OnLegend_Changed.bind(this));
+        this.group.legend.On("IndicatorChange", this.OnIndicator_Changed.bind(this));
+      } //NEW - changing to make more(or less) flexible for my purposes;
+
+    }, {
+      key: "OnLegend_Changed",
+      value: function OnLegend_Changed(ev) {
+        this.map.GetLayer("URBAN");
+
+        if (ev.state[0].checkbox.checked) {
+          this.map.ShowLayer("URBAN");
+        } else {
+          this.map.HideLayer("URBAN");
+        } //if (lay.visibility == 'visible'){this.map.HideLayer("URBAN");}
+        //else {this.map.ShowLayer("URBAN");}
+
+        /*var opacities = ev.state.map(i => Number(i.checkbox.checked));
+        	// Assumption: Data will always be point data
+              this.map.Choropleth([this.current.LayerIDs[0]], 'circle-color', this.current.Legend, opacities);
+              this.map.ChoroplethVarOpac([this.current.LayerIDs[0]], 'circle-stroke-color', this.current.Legend, opacities);
+               this.map.ChoroplethVarOpac( [this.current.LayerIDs[1]] , 'text-color', this.current.Legend, opacities);*/
+
+      } // NEW FUNCTION - added handling for radio control of indicator levels within a single style
+
+    }, {
+      key: "OnIndicator_Changed",
+      value: function OnIndicator_Changed(ev) {
+        if (this.current.stops != null) {
+          this.OnStyledIndicator_Changed(ev);
+          return false;
+        }
+
+        var radios = ev.state;
+        var choice = 0;
+
+        for (var i = 0, length = radios.length; i < length; i++) {
+          var r = radios[i];
+
+          if (r.radiobox.checked) {
+            if (r.item.styling == null) {
+              //If it's a seperate layer in itself;
+              this.map.ShowLayer(r.item.id);
+
+              if (r.item.linkedlayers != null) {
+                for (var a = 0, b = r.item.linkedlayers.length; a < b; a++) {
+                  var ll = r.item.linkedlayers[a];
+                  this.map.ShowLayer(ll);
+                }
+              }
+
+              choice = i;
+            } else {
+              //If it's a data styling layer but with its own stops defined;                    
+              this.map.SetPaintProperty(r.item.id, 'fill-color', r.item.styling);
+
+              if (r.item.linkedlayers != null) {
+                for (var a = 0, b = r.item.linkedlayers.length; a < b; a++) {
+                  var ll = r.item.linkedlayers[a];
+                  this.map.SetPaintProperty(ll, 'fill-color', r.item.styling);
+                }
+              }
+            }
+          } else {
+            if (r.item.styling == null) {
+              //If it's a seperate layer in itself;
+              this.map.HideLayer(r.item.id);
+
+              if (r.item.linkedlayers != null) {
+                for (var a = 0, b = r.item.linkedlayers.length; a < b; a++) {
+                  var ll = r.item.linkedlayers[a];
+                  this.map.HideLayer(ll);
+                }
+              }
+            }
+          }
+        }
+
+        this.group.legend.ReloadHandler(this.current, true, choice);
+      } //New Function - changes values for layers where every layer shares the same interpolation values;
+
+    }, {
+      key: "OnStyledIndicator_Changed",
+      value: function OnStyledIndicator_Changed(ev) {
+        var radios = ev.state;
+        var choice = 0;
+
+        for (var i = 0, length = radios.length; i < length; i++) {
+          var r = radios[i];
+
+          if (r.radiobox.checked) {
+            //console.log("xxxonstyledindicator changed", r.item);
+            var inter = r.item.styling.slice();
+
+            if (r.item.hasOwnProperty("stops")) {
+              inter.push.apply(inter, _toConsumableArray(r.item.stops));
+            } else {
+              inter.push.apply(inter, _toConsumableArray(this.current.stops));
+            }
+
+            this.map.SetPaintProperty(r.item.id, 'fill-color', inter);
+
+            if (r.item.linkedlayers != null) {
+              for (var a = 0, b = r.item.linkedlayers.length; a < b; a++) {
+                var ll = r.item.linkedlayers[a];
+                this.map.SetPaintProperty(ll, 'fill-color', inter);
+              }
+            }
+
+            choice = i;
+          }
+        }
+
+        this.group.legend.ReloadHandler(this.current, true, choice);
+      }
+    }, {
+      key: "ReloadMap",
+      value: function ReloadMap() {
+        if (this.current.type == "multiple") {
+          var ind = this.current.indicators;
+
+          for (var i = 0, length = ind.length; i < length; i++) {
+            var item = ind[i];
+
+            if (i == 0) {
+              this.map.ShowLayer(item.id);
+
+              if (this.current.stops != null || item.styling != null) {
+                var inter = item.styling.slice();
+
+                if (item.hasOwnProperty("stops")) {
+                  inter.push.apply(inter, _toConsumableArray(item.stops));
+                } else if (this.current.stops != null) {
+                  inter.push.apply(inter, _toConsumableArray(this.current.stops));
+                }
+
+                this.map.SetPaintProperty(item.id, 'fill-color', inter);
+
+                if (item.linkedlayers != null) {
+                  for (var a = 0, b = item.linkedlayers.length; a < b; a++) {
+                    var ll = item.linkedlayers[a];
+                    this.map.SetPaintProperty(ll, 'fill-color', inter);
+                    this.map.ShowLayer(ll);
+                  }
+                }
+              }
+            } else if (this.current.stops == null && item.styling == null) {
+              this.map.HideLayer(item.id);
+            }
+          }
+        }
+      }
+    }, {
+      key: "AddMenu",
+      value: function AddMenu() {
+        // Top-left menu below navigation
+        var maps = Factory.MapsListControl(this.config.maps);
+        var bookmarks = Factory.BookmarksControl(this.config.bookmarks);
+        this.menu = Factory.MenuControl();
+        this.map.AddControl(this.menu, "top-left");
+        this.menu.AddButton("home", Core.root + "assets/globe.png", Core.Nls("Home_Title"), this.OnHomeClick_Handler.bind(this));
+        this.menu.AddPopupButton("maps", Core.root + "assets/layers.png", Core.Nls("Maps_Title"), maps, this.map.Container);
+        this.menu.AddPopupButton("bookmarks", Core.root + "assets/bookmarks.png", Core.Nls("Bookmarks_Title"), bookmarks, this.map.Container);
+        maps.On("MapSelected", this.OnMapSelected_Handler.bind(this));
+        bookmarks.On("BookmarkSelected", this.OnBookmarkSelected_Handler.bind(this));
+      }
+    }, {
+      key: "ReloadTable",
+      value: function ReloadTable() {
+        var _this2 = this;
+
+        Dom.Empty(this.Node("table")); //console.log("resetting radios");
+
+        var radios = document.getElementsByName('tableCompare');
+
+        if (this.current.suppressComparison == false) {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].value == "0") {
+              radios[i].disabled = false;
+              radios[i].checked = true;
+            }
+
+            if (radios[i].value == "1") {
+              radios[i].checked = false;
+              radios[i].disabled = true;
+            }
+          }
+        } else {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            radios[i].disabled = true;
+            radios[i].checked = false;
+          }
+        }
+
+        Net.JSON("".concat(Core.root).concat(this.current.TableUrl)).then(function (ev) {
+          _this2.current.UpdateTable(ev.result);
+
+          _this2.table = new Table(_this2.Node("table"), _this2.current.Table);
+
+          _this2.table.Node("message").setAttribute("href", "#lode-search");
+        });
+      }
+    }, {
+      key: "OnHomeClick_Handler",
+      value: function OnHomeClick_Handler(ev) {
+        this.map.FitBounds([[-173.457, 41.846], [-17.324, 75.848]]);
+      }
+    }, {
+      key: "OnBookmarkSelected_Handler",
+      value: function OnBookmarkSelected_Handler(ev) {
+        this.menu.Button("bookmarks").popup.Hide();
+        this.map.FitBounds(ev.item.extent, {
+          animate: false
+        });
+      }
+    }, {
+      key: "OnMapSelected_Handler",
+      value: function OnMapSelected_Handler(ev) {
+        this.menu.Button("maps").popup.Hide();
+        Store.Map = ev.id;
+        this.current = ev.map; // this.Node('instructions').innerHTML = Core.Nls("Map_Description", [this.current.Title]);
+
+        this.map.SetStyle(this.current.Style); //this.ReloadMap();
+
+        this.initialized = 0;
+        this.ReloadTable();
+        this.group.legend.ReloadHandler(this.current, true);
+        this.Node("variables").innerHTML = this.current.variables[Core.locale]; //console.log("Changing map", this.current.suppressComparison);
+
+        this.UpdateSearch();
+        var radios = document.getElementsByName('tableCompare');
+
+        if (this.current.suppressComparison == false) {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].value == "0") {
+              radios[i].disabled = false;
+              radios[i].checked = true;
+            }
+
+            if (radios[i].value == "1") {
+              radios[i].checked = false;
+              radios[i].disabled = true;
+            }
+          }
+        } else {
+          for (var i = 0, length = radios.length; i < length; i++) {
+            radios[i].disabled = true;
+            radios[i].checked = false;
+          }
+        } //this.group.legend.Reload(this.current.Legend, this.current.FullTitle, this.current.Subtitle);
+
+      }
+    }, {
+      key: "OnMapStyleChanged_Handler",
+      value: function OnMapStyleChanged_Handler(ev) {
+        this.map.SetClickableMap();
+
+        if (this.current.type == "multiple") {
+          var ind = this.current.indicators;
+
+          for (var i = 0, length = ind.length; i < length; i++) {
+            var item = ind[i];
+
+            if (i == 0) {
+              this.map.ShowLayer(item.id);
+
+              if (this.current.stops != null || item.styling != null) {
+                var inter = item.styling.slice();
+
+                if (this.current.stops != null) {
+                  inter.push.apply(inter, _toConsumableArray(this.current.stops));
+                }
+
+                this.map.SetPaintProperty(item.id, 'fill-color', inter);
+
+                if (item.linkedlayers != null) {
+                  for (var a = 0, b = item.linkedlayers.length; a < b; a++) {
+                    var ll = item.linkedlayers[a];
+                    this.map.SetPaintProperty(ll, 'fill-color', inter);
+                  }
+                }
+              }
+            } else {
+              this.map.HideLayer(item.id);
+            }
+          }
+        } // Assumption: Data will always be point data 
+        //this.map.Choropleth([this.current.LayerIDs[0]], 'circle-color', this.current.Legend, 1); //CHANGE
+
+      }
+    }, {
+      key: "OnMapMoveEnd_Handler",
+      value: function OnMapMoveEnd_Handler(ev) {
+        Store.Lat = this.map.Center.lat;
+        Store.Lng = this.map.Center.lng;
+      }
+    }, {
+      key: "OnMapZoomEnd_Handler",
+      value: function OnMapZoomEnd_Handler(ev) {
+        //console.log("zoom is ", this.map.Zoom);
+        Store.Zoom = this.map.Zoom;
+      }
+    }, {
+      key: "OnMapClick_Handler",
+      value: function OnMapClick_Handler(ev) {
+        var zoom = this.map.map.getZoom();
+        var features = this.map.QueryRenderedFeatures(ev.point, this.current.ClickableLayersIDsByZoom(zoom));
+
+        if (features.length == 0) {
+          this.map.HighlightArea("", this.current.HighlightLayers, this.current.searchID);
+          return;
+        }
+
+        var f = features[0]; // WORKAROUND to fix fields (there's another one in table.js)
+
+        for (var fld in f.properties) {
+          f.properties[fld] = Workaround.FixField(fld, f.properties[fld]);
+        } // TODO : Handle lookups, string formats
+
+
+        var html = Other.HTMLize(f.properties, this.current.Fields, Core.Nls("Map_Not_Available"), this.current.suppressFields); //NEW - WORKAROUND to remove period dates just for CEWS 
+
+        var removeText = [" - 2020-03-15", " - 2020-04-12", " - 2020-05-10", " - 2020-06-07", " - 2020-07-05", " - 2020-08-02", " - 2020-08-30", " - 2020-09-27", " - 2020-10-25", " - 2020-11-22", " - 2020-12-20", " - 2021-01-17", " - 2021-02-14", " - 2021-03-14", " - 2021-04-11"];
+
+        for (var txt in removeText) {
+          var t = removeText[txt];
+          html = html.replace(t, "");
+        }
+
+        this.map.InfoPopup(ev.lngLat, html);
+        this.map.HighlightArea(f.properties[this.current.searchID], this.current.HighlightLayers, this.current.searchID);
+      } // Assumption : Search will always be by CSD
+
+    }, {
+      key: "OnSearchChange_Handler",
+      value: function OnSearchChange_Handler(ev) {
+        var legend = [{
+          color: this.config.search.color,
+          value: ["==", ["get", this.config.search.field], ev.item.id]
+        }, {
+          color: [255, 255, 255, 0]
+        }];
+        console.log("item is ", this.current.eFileDownload == null && this.current.fFileDownload == null);
+        this.table.eFileDownload = this.current.eFileDownload;
+        this.table.fFileDownload = this.current.fFileDownload;
+        this.table.fileReplace = this.current.fileReplace;
+        this.table.UpdateTable(ev.item); //this.table.Node('saveAll').disabled = (this.current.eFileDownload == null && this.current.fFileDownload == null);
+
+        console.log("disabled is ", this.table.Node('saveAll').disabled);
+        this.map.FitBounds(ev.item.extent, {
+          padding: 30,
+          animate: false
+        });
+        this.map.HighlightArea(ev.item.id, this.current.HighlightLayers, this.current.searchID, this.current.sourceLayer);
+        this.map.Choropleth([this.config.search.layer], 'line-color', legend);
+      }
+    }]);
+
+    return ProxApp;
+  }(Templated);
+
+  Core.root = "./2021023/";
+  Net.JSON("".concat(Core.root, "config/config.nls.json")).then(function (value) {
+    Core.locale = document.documentElement.lang || "en";
+    Core.nls = value.result;
+    var p1 = Net.JSON("".concat(Core.root, "config/config.applications.json"));
+    Promise.all([p1]).then(Start);
+  });
+
+  function Start(results) {
+    var defs = results[0].result.map(function (m) {
+      return Net.JSON("".concat(Core.root).concat(m));
+    });
+    var config = {};
+    var p1 = Promise.all(defs).then(function (values) {
+      config.maps = {}; // Store map configurations in config object
+
+      values.forEach(function (v) {
+        return config.maps[v.result.id] = Configuration.FromJSON(v.result);
+      });
+    });
+    var p2 = Net.JSON("".concat(Core.root, "config/config.bookmarks.json")).then(function (value) {
+      // Store bookmarks for CMA extents from bookmarks config file
+      config.bookmarks = value.result.items;
+    });
+    var p3 = Net.JSON("".concat(Core.root, "config/config.search.json")).then(function (value) {
+      // Store search CSD values from search config file
+      config.search = value.result;
+    });
+    Promise.all([p1, p2, p3]).then(function (results) {
+      // Update app-container with application
+      var node = Dom.Node(document.body, "#app-container");
+      new ProxApp(node, config);
+    });
+  }
+
+}());
